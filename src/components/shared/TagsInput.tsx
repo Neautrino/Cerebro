@@ -7,22 +7,14 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { X } from 'lucide-react';
 import { useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
-import { Id } from '../../../convex/_generated/dataModel';
-
-// Simulated existing tags - in a real app, this would come from your backend
-// const existingTags = [
-//   'development', 'design', 'research', 'productivity',
-//   'ideas', 'projects', 'tasks', 'notes', 'meetings',
-//   'planning', 'goals', 'review', 'important', 'archive'
-// ];
 
 interface TagInputProps {
-  tags: string[];
-  onChange: (tags: string[]) => void;
+  value: string[];
+  onChange: (value: string[]) => void;
 }
 
 
-export function TagInput({ tags, onChange }: TagInputProps) {
+export function TagInput({ value, onChange }: TagInputProps) {
   const [input, setInput] = useState('');
   const [filteredTags, setFilteredTags] = useState<string[]>([]);
   const existingTags = useQuery(api.tags.getAllTags);
@@ -31,39 +23,39 @@ export function TagInput({ tags, onChange }: TagInputProps) {
     if (existingTags) {
       setFilteredTags(
         existingTags.filter(tag => 
-          !tags.includes(tag.name) && 
+          !value.includes(tag.name) && 
           tag["name"].toLowerCase().includes(input.toLowerCase())
         ).map(tag => tag.name)
       );
     }
-  }, [input, tags]);
+  }, [input, value, existingTags]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && input) {
       e.preventDefault();
       const newTag = input.toLowerCase().trim();
-      if (!tags.includes(newTag)) {
-        onChange([...tags, newTag]);
+      if (!value.includes(newTag)) {
+        onChange([...value, newTag]);
       }
       setInput('');
     }
   };
 
   const addExistingTag = (tag: string) => {
-    if (!tags.includes(tag)) {
-      onChange([...tags, tag]);
+    if (!value.includes(tag)) {
+      onChange([...value, tag]);
     }
     setInput('');
   };
 
   const removeTag = (tagToRemove: string) => {
-    onChange(tags.filter(tag => tag !== tagToRemove));
+    onChange(value.filter(tag => tag !== tagToRemove));
   };
 
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2 min-h-[2.5rem] p-2 border rounded-md">
-        {tags.map(tag => (
+        {value.map(tag => (
           <Badge key={tag} variant="secondary" className="gap-1">
             {tag}
             <X
@@ -77,7 +69,7 @@ export function TagInput({ tags, onChange }: TagInputProps) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           className="border-0 w-20 grow focus-visible:ring-0 p-0"
-          placeholder={tags.length === 0 ? "Add tags by clicking Enter..." : ""}
+          placeholder={value.length === 0 ? "Add tags by clicking Enter..." : ""}
         />
       </div>
       
