@@ -1,5 +1,7 @@
 import { Brain, Search } from "lucide-react"
 import { ThemeToggle } from "../theme-toggle"
+import { Input } from "../ui/input"
+import UserBtn from "./UserBtn"
 
 function Navbar() {
   return (
@@ -11,9 +13,11 @@ function Navbar() {
             </div>
             <div className="ml-auto flex items-center space-x-4">
                 <div className="relative w-96">
-                    search
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search..." className="pl-8" />
                 </div>
                 <ThemeToggle  />
+                <UserBtn />
             </div>
         </div>
     </div>
