@@ -8,13 +8,11 @@ export default function HomeLayout({
     children: React.ReactNode;
 }){
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen flex flex-col">
             <Navbar />
-            <div className="flex">
-                <div className="w-64 border-r-2 min-h-[calc(100vh-4rem)]">
-                    <Sidebar />
-                </div>
-                <main className="flex-1 p-8">
+            <div className="flex flex-1">
+                <Sidebar />
+                <main className="flex-1 p-8 overflow-y-scroll">
                     {children}
                 </main>
             </div>
