@@ -24,6 +24,7 @@ export default defineSchema({
     title: v.string(),
     content: v.string(),
     tags: v.optional(v.array(v.string())),
+    updatedTime: v.number(),
   }).index("by_user_id", ["userId"]),
   
   tags: defineTable({

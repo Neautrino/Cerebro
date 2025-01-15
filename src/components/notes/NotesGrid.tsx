@@ -2,6 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 const knowledgeItems = [
   {
@@ -35,22 +37,25 @@ const knowledgeItems = [
 ];
 
 export default function NotesGrid() {
+
+  const notes = useQuery(api.notes.getNotes);
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {knowledgeItems.map((item) => (
-        <Card key={item.id} className="hover:bg-accent/50 transition-colors cursor-pointer">
+      {notes?.map((note) => (
+        <Card key={note._id} className="hover:bg-accent/50 transition-colors cursor-pointer">
           <CardHeader>
-            <CardTitle className="text-xl">{item.title}</CardTitle>
+            <CardTitle className="text-xl">{note.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">{item.excerpt}</p>
+            <p className="text-muted-foreground mb-4">{note.content}</p>
             <div className="flex flex-wrap gap-2">
-              {item.tags.map((tag) => (
+              {note?.tags?.map((tag) => (
                 <Badge key={tag} variant="secondary">{tag}</Badge>
               ))}
             </div>
             <p className="text-sm text-muted-foreground mt-4">
-              Last updated: {item.lastUpdated}
+              Last updated: {new Date(note.updatedTime).toLocaleDateString()}
             </p>
           </CardContent>
         </Card>

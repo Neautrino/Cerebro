@@ -8,17 +8,23 @@ import { Label } from '@/components/ui/label';
 import { Plus } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 import { TagInput } from '@/components/shared/TagsInput';
+import { useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 
 export default function AddNotesBtn() {
   const [title, setTitle] = useState('');
   const [ content, setContent] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   
-  const handleCreate = () => {
-    // TODO: Implement knowledge entry creation
-    console.log('Creating entry:', { title, tags });
-  };
-
+  const createNotes = useMutation(api.notes.createNotes);
+  
+  const handleCreateNotes = async () => {
+    await createNotes({title, content, tags});
+    setTitle('');
+    setContent('');
+    setTags([]);
+    
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -54,7 +60,7 @@ export default function AddNotesBtn() {
             <Label>Tags</Label>
             <TagInput tags={tags} onChange={setTags} />
           </div>
-          <Button onClick={handleCreate} className="w-full">
+          <Button onClick={handleCreateNotes} className="w-full">
             Create Entry
           </Button>
         </div>
