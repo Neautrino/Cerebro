@@ -17,9 +17,11 @@ export default function AddNotesBtn() {
   const [tags, setTags] = useState<string[]>([]);
   
   const createNotes = useMutation(api.notes.createNotes);
+  const createTags = useMutation(api.tags.createTags);
   
   const handleCreateNotes = async () => {
     await createNotes({title, content, tags});
+    await createTags({names: tags});
     setTitle('');
     setContent('');
     setTags([]);

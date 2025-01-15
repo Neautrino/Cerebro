@@ -5,30 +5,37 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { X } from 'lucide-react';
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
 
 // Simulated existing tags - in a real app, this would come from your backend
-const existingTags = [
-  'development', 'design', 'research', 'productivity',
-  'ideas', 'projects', 'tasks', 'notes', 'meetings',
-  'planning', 'goals', 'review', 'important', 'archive'
-];
+// const existingTags = [
+//   'development', 'design', 'research', 'productivity',
+//   'ideas', 'projects', 'tasks', 'notes', 'meetings',
+//   'planning', 'goals', 'review', 'important', 'archive'
+// ];
 
 interface TagInputProps {
   tags: string[];
   onChange: (tags: string[]) => void;
 }
 
+
 export function TagInput({ tags, onChange }: TagInputProps) {
   const [input, setInput] = useState('');
   const [filteredTags, setFilteredTags] = useState<string[]>([]);
+  const existingTags = useQuery(api.tags.getAllTags);
 
   useEffect(() => {
-    setFilteredTags(
-      existingTags.filter(tag => 
-        !tags.includes(tag) && 
-        tag.toLowerCase().includes(input.toLowerCase())
-      )
-    );
+    if (existingTags) {
+      setFilteredTags(
+        existingTags.filter(tag => 
+          !tags.includes(tag.name) && 
+          tag["name"].toLowerCase().includes(input.toLowerCase())
+        ).map(tag => tag.name)
+      );
+    }
   }, [input, tags]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -36,7 +43,6 @@ export function TagInput({ tags, onChange }: TagInputProps) {
       e.preventDefault();
       const newTag = input.toLowerCase().trim();
       if (!tags.includes(newTag)) {
-        existingTags.push(newTag);
         onChange([...tags, newTag]);
       }
       setInput('');
