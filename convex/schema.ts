@@ -25,12 +25,7 @@ export default defineSchema({
     content: v.string(),
     tags: v.optional(v.array(v.string())),
   }).index("by_user_id", ["userId"]),
-  documents: defineTable({
-    userId: v.string(),
-    title: v.string(),
-    content: v.string(),
-    tags: v.optional(v.array(v.string())),
-  }).index("by_user_id", ["userId"]),
+  
   tags: defineTable({
     name: v.string(),
   }),

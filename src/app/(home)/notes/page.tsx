@@ -1,23 +1,19 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import AddNotesBtn from '@/components/notes/AddNotesBtn';
-// import { KnowledgeGrid } from '@/components/workspace/knowledge/knowledge-grid';
+import NotesGrid from '@/components/notes/NotesGrid';
 
 export default function NotesPage() {
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4">
+      <div className="flex justify-between items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Notes</h2>
-          <p className="text-muted-foreground">Your personal wiki & notes in one place</p>
+          <p className="text-muted-foreground text-[10px] sm:text-base trim sm:block">Your personal wiki & notes in one place</p>
         </div>
         <AddNotesBtn  />
       </div>
-
-      {/* <KnowledgeGrid /> */}
+        <NotesGrid />
     </div>
   );
 }
