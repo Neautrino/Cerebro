@@ -43,12 +43,12 @@ export default function NotesGrid() {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {notes?.map((note) => (
-        <Card key={note._id} className="hover:bg-accent/50 transition-colors cursor-pointer">
+        <Card key={note._id} className="hover:bg-accent/50 transition-colors cursor-pointer h-54 flex flex-col">
           <CardHeader>
-            <CardTitle className="text-xl">{note.title}</CardTitle>
+            <CardTitle className="text-xl truncate">{note.title}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">{note.content}</p>
+          <CardContent className="flex-1 overflow-hidden flex flex-col justify-between">
+            <p className="text-muted-foreground mb-4 line-clamp-2">{note.content}</p>
             <div className="flex flex-wrap gap-2">
               {note?.tags?.map((tag) => (
                 <Badge key={tag} variant="secondary">{tag}</Badge>
