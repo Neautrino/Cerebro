@@ -22,11 +22,13 @@ export default defineSchema({
   notes: defineTable({
     userId: v.string(),
     title: v.string(),
-    content: v.string(),
+    content: v.optional(v.string()),
+    fileId: v.optional(v.id("_storage")),
     tags: v.optional(v.array(v.string())),
     updatedTime: v.number(),
   }).index("by_user_id", ["userId"]),
-  
+
+
   tags: defineTable({
     name: v.string(),
   }),

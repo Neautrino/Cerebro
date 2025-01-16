@@ -15,20 +15,20 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { TagInput } from '@/components/shared/TagsInput';
-import { Loader2, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
-import DialogButton from '../shared/DialogButton';
+import UploadingBtn from '../shared/UploadingBtn';
+import { Id } from '../../../convex/_generated/dataModel';
 
 
 const formSchema = z.object({
   title: z.string({
     required_error: 'Title is required'
   }),
-  content: z.string({
-    required_error: 'Content is required'
-  }),
+  content: z.string().optional(),
+  file: z.instanceof(File).optional(),
   tags: z.array(z.string()).optional()
 })
 
@@ -43,14 +43,29 @@ export default function AddNotesBtn() {
   })
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const generateUploadUrl = useMutation(api.notes.generateUploadUrl);
   const createNotes = useMutation(api.notes.createNotes);
   const createTags = useMutation(api.tags.createTags);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { title, content, tags } = values;
-    await createNotes({ title, content, tags });
-    await createTags({ names: tags || [] });
+    const url = await generateUploadUrl();
+    
+    const result = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": values.file!.type },
+      body: values.file,
+    });
+
+    const { storageId } = await result.json();
+    await createNotes({ 
+      title: values.title, 
+      content: values.content,
+      fileId: storageId as Id<"_storage">,
+      tags: values.tags || [],
+    });
+    await createTags({ names: values.tags || [] });
     form.reset();
+
     setIsDialogOpen(false);
   }
   return (
@@ -93,11 +108,28 @@ export default function AddNotesBtn() {
                     <Textarea
                       placeholder="Type your content here..."
                       {...field}
-                      required
                     />
                   </FormControl>
                 </FormItem>
 
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="file"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>File</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept='.pdf,.docx,.txt,.md,.xml'
+                      onChange={(e) => {
+                        field.onChange(e.target.files?.[0]);
+                      }}
+                    />
+                  </FormControl>
+                </FormItem>
               )}
             />
             <FormField
@@ -113,7 +145,9 @@ export default function AddNotesBtn() {
               )}
             />
 
-            <DialogButton isLoading={form.formState.isSubmitting} />
+            <UploadingBtn isLoading={form.formState.isSubmitting} loadingText='Creating...'>
+              Create Entry
+            </UploadingBtn>
           </form>
         </Form>
       </DialogContent>
