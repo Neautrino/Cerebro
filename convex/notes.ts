@@ -1,5 +1,10 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { action, mutation, query } from "./_generated/server";
+import { api } from "./_generated/api";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export const getNotes = query({
     handler: async (ctx) => {
@@ -92,3 +97,49 @@ export const getMetadata = query({
         return await ctx.db.system.get(args.storageId);
     },
 });
+
+export const askQuestion = action({
+    args: {
+        question: v.string(),
+        noteId: v.id("notes"),
+    },
+    handler: async (ctx, args) => {
+
+        const user = await ctx.auth.getUserIdentity();
+
+        if (!user) {
+            throw new ConvexError("Not authorized");
+        }
+
+        const note = await ctx.runQuery(api.notes.getNoteById, { id: args.noteId });
+
+        if (!note) {
+            throw new ConvexError("Note not found");
+        }
+
+        if (!note.fileId) {
+            throw new ConvexError("File ID not found");
+        }
+
+        const file = await ctx.storage.get(note.fileId);
+
+        if (!file) {
+            throw new ConvexError("File not found");
+        }
+
+        const fileBuffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(fileBuffer);
+        const base64String = btoa(String.fromCharCode(...uint8Array));
+
+        const result = await model.generateContent([
+            {
+                inlineData: {
+                    data: base64String,
+                    mimeType: "application/pdf",
+                },
+            },
+            'Summarize this document',
+        ]);
+        console.log(result.response.text());
+    }
+})

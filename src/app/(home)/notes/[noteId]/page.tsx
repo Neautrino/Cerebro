@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from 'convex/react';
 import { api } from '../../../../../convex/_generated/api';
 import { Id } from '../../../../../convex/_generated/dataModel';
-
+import ChatPanel from '@/components/notes/ChatPanel';
 export default function NotePage({ params }: { params: Promise<{ noteId: Id<"notes"> }> }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState<string | null>('');
@@ -87,12 +87,10 @@ export default function NotePage({ params }: { params: Promise<{ noteId: Id<"not
             <div className="flex gap-8">
                 <div className='flex-1 bg-gray-900 rounded-lg'>
                     {note?.fileUrl && (
-                        <iframe src={note.fileUrl} className="w-full h-[500px] rounded-lg" />
+                        <iframe src={note.fileUrl} className="w-full h-[450px] rounded-lg" />
                     )}
                 </div>
-                <div className='w-[300px] h-[500px] bg-gray-900 rounded-lg'>
-
-                </div>
+                <ChatPanel noteId={noteId!} />
             </div>
 
         </div>
