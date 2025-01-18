@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import { Id } from "../../../../../convex/_generated/dataModel"
 import { api } from "../../../../../convex/_generated/api"
-import { useQuery } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import Link from "next/link"
 
 interface Document {
@@ -25,6 +25,7 @@ interface DocumentsCardProps {
 function DocumentsCard({ doc }: DocumentsCardProps) {
 
     const file = useQuery(api.documents.getFile, { storageId: doc.fileId });
+    const deleteDocument = useMutation(api.documents.deleteDocument);
 
     const getFileType = (contentType?: string) => {
         if (contentType === "application/pdf") return "PDF";
@@ -47,6 +48,10 @@ function DocumentsCard({ doc }: DocumentsCardProps) {
 
         return `${Math.round(size)} ${units[unitIndex]}`;
     };
+
+    const handleDelete = async () => {
+        await deleteDocument({ id: doc._id });
+    }
 
     return (
         <Card key={doc._id}>
@@ -72,7 +77,7 @@ function DocumentsCard({ doc }: DocumentsCardProps) {
                                 View
                             </Link>
                         </Button>
-                        <Button variant="destructive" asChild>
+                        <Button variant="destructive" onClick={handleDelete} asChild>
                             <div className="flex items-center gap-2">
                                 <Trash2Icon className="w-4 h-4" />
                                 Delete

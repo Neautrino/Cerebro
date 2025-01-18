@@ -16,19 +16,18 @@ import {
 } from "@/components/ui/form"
 import { TagInput } from '@/components/shared/TagsInput';
 import { Plus } from 'lucide-react';
-import { Textarea } from '../ui/textarea';
+import { Textarea } from '@/components/ui/textarea';
 import { useMutation } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
-import UploadingBtn from '../shared/UploadingBtn';
-import { Id } from '../../../convex/_generated/dataModel';
+import UploadingBtn from '@/components/shared/UploadingBtn';
+import { api } from '../../../../../convex/_generated/api';
+import { Id } from '../../../../../convex/_generated/dataModel';
 
 
 const formSchema = z.object({
   title: z.string({
     required_error: 'Title is required'
   }),
-  content: z.string().optional(),
-  file: z.instanceof(File).optional(),
+  content: z.string(),
   tags: z.array(z.string()).optional()
 })
 
@@ -43,25 +42,15 @@ export default function AddNotesBtn() {
   })
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const generateUploadUrl = useMutation(api.notes.generateUploadUrl);
-  const createNotes = useMutation(api.notes.createNotes);
+  const createNote = useMutation(api.notes.createNote);
   const createUniqueTags = useMutation(api.tags.createUniqueTags);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const uniqueTags = Array.from(new Set(values.tags || []));
-    const url = await generateUploadUrl();
     
-    const result = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": values.file!.type },
-      body: values.file,
-    });
-
-    const { storageId } = await result.json();
-    await createNotes({ 
+    await createNote({ 
       title: values.title, 
       content: values.content,
-      fileId: storageId as Id<"_storage">,
       tags: uniqueTags,
     });
     await createUniqueTags({ names: uniqueTags });
@@ -113,24 +102,6 @@ export default function AddNotesBtn() {
                   </FormControl>
                 </FormItem>
 
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="file"
-              render={({ field }) => (
-                <FormItem className="space-y-2">
-                  <FormLabel>File</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept='.pdf,.docx,.txt,.md,.xml'
-                      onChange={(e) => {
-                        field.onChange(e.target.files?.[0]);
-                      }}
-                    />
-                  </FormControl>
-                </FormItem>
               )}
             />
             <FormField

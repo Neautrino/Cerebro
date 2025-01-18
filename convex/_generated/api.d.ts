@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as documents from "../documents.js";
 import type * as links from "../links.js";
+import type * as notes from "../notes.js";
 import type * as tags from "../tags.js";
 import type * as tweets from "../tweets.js";
 
@@ -29,6 +30,7 @@ import type * as tweets from "../tweets.js";
 declare const fullApi: ApiFromModules<{
   documents: typeof documents;
   links: typeof links;
+  notes: typeof notes;
   tags: typeof tags;
   tweets: typeof tweets;
 }>;

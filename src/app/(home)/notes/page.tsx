@@ -1,7 +1,7 @@
 'use client';
 
-import AddNotesBtn from '@/components/notes/AddNotesBtn';
-import NotesGrid from '@/components/notes/NotesGrid';
+import AddNotesBtn from "./_components/AddNotesBtn";
+import NotesGrid from "./_components/NotesGrid";
 
 export default function NotesPage() {
   return (

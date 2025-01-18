@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { title } from "process";
 
 export default defineSchema({
   users: defineTable({
@@ -17,6 +18,14 @@ export default defineSchema({
       v.literal("medium"),
       v.literal("high"),
     ),
+  }).index("by_user_id", ["userId"]),
+
+  notes: defineTable({
+    userId: v.string(),
+    title: v.string(),
+    content: v.string(),
+    tags: v.optional(v.array(v.string())),
+    updatedTime: v.number(),
   }).index("by_user_id", ["userId"]),
 
   documents: defineTable({
