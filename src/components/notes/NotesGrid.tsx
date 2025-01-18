@@ -7,6 +7,9 @@ import { api } from '../../../convex/_generated/api';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { EyeIcon } from 'lucide-react';
+import NotesSkeleton from './NotesSkeleton';
+import Image from 'next/image';
+import AddNotesBtn from './AddNotesBtn';
 
 export default function NotesGrid() {
 
@@ -14,8 +17,11 @@ export default function NotesGrid() {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {notes?.map((note) => (
-        <Card key={note._id} className="hover:bg-accent/50 transition-colors h-54 flex flex-col">
+      {notes === undefined &&  Array.from({ length: 6 }).map((_, index) => (
+        <NotesSkeleton key={index} />
+      ))}
+      {notes && notes.length > 0 ? notes.map((note) => (
+        <Card key={note._id} className="hover:bg-accent/50 transition-colors flex flex-col">
           <CardHeader>
             <CardTitle className="text-xl truncate">{note.title}</CardTitle>
           </CardHeader>
@@ -39,7 +45,20 @@ export default function NotesGrid() {
             </div>
           </CardContent>
         </Card>
-      ))}
+      )) : (
+        <div className="flex flex-col col-span-full mt-20 items-center justify-center gap-4">
+          <Image 
+            src="/documents_not_found.svg"
+            width={200}
+            height={200}
+            alt="No notes found"
+          />
+          <p className="text-muted-foreground text-lg">
+            No notes found. Create a new note to get started.
+          </p>
+          <AddNotesBtn />
+        </div>
+      )}
     </div>
   );
 }

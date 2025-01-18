@@ -48,6 +48,7 @@ export default function AddNotesBtn() {
   const createTags = useMutation(api.tags.createTags);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const uniqueTags = Array.from(new Set(values.tags || []));
     const url = await generateUploadUrl();
     
     const result = await fetch(url, {
@@ -61,9 +62,9 @@ export default function AddNotesBtn() {
       title: values.title, 
       content: values.content,
       fileId: storageId as Id<"_storage">,
-      tags: values.tags || [],
+      tags: uniqueTags,
     });
-    await createTags({ names: values.tags || [] });
+    await createTags({ names: uniqueTags });
     form.reset();
 
     setIsDialogOpen(false);
