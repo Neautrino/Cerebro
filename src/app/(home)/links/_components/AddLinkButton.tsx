@@ -16,52 +16,47 @@ import {
 } from "@/components/ui/form"
 import { TagInput } from '@/components/shared/TagsInput';
 import { Plus } from 'lucide-react';
-import { Textarea } from '../ui/textarea';
+import { Textarea } from '@/components/ui/textarea';
 import { useMutation } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
-import UploadingBtn from '../shared/UploadingBtn';
-import { Id } from '../../../convex/_generated/dataModel';
+import UploadingBtn from '@/components/shared/UploadingBtn';
+import { api } from '../../../../../convex/_generated/api';
 
 
 const formSchema = z.object({
   title: z.string({
     required_error: 'Title is required'
   }),
-  content: z.string().optional(),
-  file: z.instanceof(File).optional(),
+  description: z.string({
+    required_error: 'Description is required'
+  }),
+  url: z.string({
+    required_error: 'Url is required'
+}),
   tags: z.array(z.string()).optional()
 })
 
-export default function AddNotesBtn() {
+export default function AddLinksButton() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      content: '',
+      description: '',
+      url: '',
       tags: []
     },
   })
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const generateUploadUrl = useMutation(api.notes.generateUploadUrl);
-  const createNotes = useMutation(api.notes.createNotes);
+  const createLink = useMutation(api.links.createLink);
   const createUniqueTags = useMutation(api.tags.createUniqueTags);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const uniqueTags = Array.from(new Set(values.tags || []));
-    const url = await generateUploadUrl();
     
-    const result = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": values.file!.type },
-      body: values.file,
-    });
-
-    const { storageId } = await result.json();
-    await createNotes({ 
+    await createLink({ 
       title: values.title, 
-      content: values.content,
-      fileId: storageId as Id<"_storage">,
+      description: values.description,
+      url: values.url,
       tags: uniqueTags,
     });
     await createUniqueTags({ names: uniqueTags });
@@ -69,17 +64,18 @@ export default function AddNotesBtn() {
 
     setIsDialogOpen(false);
   }
+
   return (
     <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          New Entry
+          Add Link
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Create Knowledge Entry</DialogTitle>
+          <DialogTitle>Add new Link</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-4">
@@ -101,13 +97,13 @@ export default function AddNotesBtn() {
             />
             <FormField
               control={form.control}
-              name="content"
+              name="description"
               render={({ field }) => (
                 <FormItem className="space-y-2">
-                  <FormLabel htmlFor="content">Content</FormLabel>
+                  <FormLabel htmlFor="content">Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Type your content here..."
+                      placeholder="Type your description here..."
                       {...field}
                     />
                   </FormControl>
@@ -117,17 +113,14 @@ export default function AddNotesBtn() {
             />
             <FormField
               control={form.control}
-              name="file"
+              name="url"
               render={({ field }) => (
                 <FormItem className="space-y-2">
-                  <FormLabel>File</FormLabel>
+                  <FormLabel htmlFor="content">Link</FormLabel>
                   <FormControl>
                     <Input
-                      type="file"
-                      accept='.pdf,.docx,.txt,.md,.xml'
-                      onChange={(e) => {
-                        field.onChange(e.target.files?.[0]);
-                      }}
+                      placeholder="https://example.com"
+                      {...field}
                     />
                   </FormControl>
                 </FormItem>

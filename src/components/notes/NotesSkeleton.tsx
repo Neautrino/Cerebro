@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function NotesSkeleton() {
     return (
-        <Card className=" w-full flex flex-col">
+        <Card className="w-full flex flex-col">
           <CardHeader>
             <Skeleton className="h-4 w-3/4" />
           </CardHeader>

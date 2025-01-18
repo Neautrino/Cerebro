@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useAction } from 'convex/react'
-import { api } from '../../../convex/_generated/api'
-import { Id } from '../../../convex/_generated/dataModel'
+import { api } from '../../../../../../convex/_generated/api'
+import { Id } from '../../../../../../convex/_generated/dataModel'
 import { cn } from '@/lib/utils'
 
 interface MessagesProp {
@@ -13,13 +12,13 @@ interface MessagesProp {
     from: string;
 }
 
-function ChatPanel({ noteId }: { noteId: Id<"notes"> }) {
+function ChatPanel({ documentId }: { documentId: Id<"documents"> }) {
 
     const [messages, setMessages] = useState<MessagesProp[]>([]);
     const [ newMessage, setNewMessage ] = useState('');
     const lastRef = useRef<HTMLDivElement>(null);
 
-    const askQuestion = useAction(api.notes.askQuestion);
+    const askQuestion = useAction(api.documents.askQuestion);
 
     useEffect(() => {
         lastRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -34,7 +33,7 @@ function ChatPanel({ noteId }: { noteId: Id<"notes"> }) {
         ]);
         setNewMessage('');
     
-        const response = await askQuestion({ question: newMessage, noteId });
+        const response = await askQuestion({ question: newMessage, documentId });
     
         setMessages(prevMessages => [
             ...prevMessages,

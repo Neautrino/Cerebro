@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/form"
 import { TagInput } from '@/components/shared/TagsInput';
 import { Plus } from 'lucide-react';
-import { Textarea } from '../ui/textarea';
+import { Textarea } from '@/components/ui/textarea';
 import { useMutation } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
-import UploadingBtn from '../shared/UploadingBtn';
-import { Id } from '../../../convex/_generated/dataModel';
+import UploadingBtn from '@/components/shared/UploadingBtn';
+import { api } from '../../../../../convex/_generated/api';
+import { Id } from '../../../../../convex/_generated/dataModel';
 
 
 const formSchema = z.object({
@@ -28,11 +28,11 @@ const formSchema = z.object({
     required_error: 'Title is required'
   }),
   content: z.string().optional(),
-  file: z.instanceof(File).optional(),
+  file: z.instanceof(File),
   tags: z.array(z.string()).optional()
 })
 
-export default function AddNotesBtn() {
+export default function AddDocumentsBtn() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,8 +43,8 @@ export default function AddNotesBtn() {
   })
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const generateUploadUrl = useMutation(api.notes.generateUploadUrl);
-  const createNotes = useMutation(api.notes.createNotes);
+  const generateUploadUrl = useMutation(api.documents.generateUploadUrl);
+  const createDocument = useMutation(api.documents.createDocument);
   const createUniqueTags = useMutation(api.tags.createUniqueTags);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -58,7 +58,7 @@ export default function AddNotesBtn() {
     });
 
     const { storageId } = await result.json();
-    await createNotes({ 
+    await createDocument({ 
       title: values.title, 
       content: values.content,
       fileId: storageId as Id<"_storage">,
@@ -74,12 +74,12 @@ export default function AddNotesBtn() {
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          New Entry
+          Upload Document
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Create Knowledge Entry</DialogTitle>
+          <DialogTitle>Create a new Document</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 py-4">

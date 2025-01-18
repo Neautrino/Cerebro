@@ -6,7 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-export const getNotes = query({
+export const getDocuments = query({
     handler: async (ctx) => {
 
         const user = await ctx.auth.getUserIdentity();
@@ -14,15 +14,15 @@ export const getNotes = query({
         if (!user) {
             throw new ConvexError("Not authorized");
         }
-        const documents = await ctx.db.query("notes")
+        const documents = await ctx.db.query("documents")
             .withIndex("by_user_id", (q) => q.eq("userId", user.subject))
             .collect();
         return documents;
     }
 })
 
-export const getNoteById = query({
-    args: { id: v.id("notes") },
+export const getDocumentById = query({
+    args: { id: v.id("documents") },
     handler: async (ctx, args) => {
 
         const userId = await ctx.auth.getUserIdentity();
@@ -30,28 +30,28 @@ export const getNoteById = query({
             throw new ConvexError("Not a user");
         }
 
-        const note = await ctx.db.get(args.id);
+        const document = await ctx.db.get(args.id);
 
-        if (!note) {
-            throw new ConvexError("Note not found");
+        if (!document) {
+            throw new ConvexError("Document not found");
         }
 
-        if (note.userId !== userId.subject) {
+        if (document.userId !== userId.subject) {
             throw new ConvexError("Not authorized");
         }
 
         return {
-            ...note,
-            fileUrl: note.fileId ? await ctx.storage.getUrl(note.fileId) : null,
+            ...document,
+            fileUrl: document.fileId ? await ctx.storage.getUrl(document.fileId) : null,
         };
     }
 })
 
-export const createNotes = mutation({
+export const createDocument = mutation({
     args: {
         title: v.string(),
         content: v.optional(v.string()),
-        fileId: v.optional(v.id("_storage")),
+        fileId: v.id("_storage"),
         tags: v.optional(v.array(v.string())),
     },
     handler: async (ctx, args) => {
@@ -61,8 +61,7 @@ export const createNotes = mutation({
             throw new ConvexError("Not authorized");
         }
 
-        console.log(user.subject);
-        const document = await ctx.db.insert("notes", {
+        const document = await ctx.db.insert("documents", {
             title: args.title,
             content: args.content,
             fileId: args.fileId,
@@ -74,9 +73,9 @@ export const createNotes = mutation({
     },
 });
 
-export const updateNotes = mutation({
+export const updateDocument = mutation({
     args: {
-        id: v.id("notes"),
+        id: v.id("documents"),
         title: v.string(),
         content: v.optional(v.string()),
     },
@@ -89,7 +88,7 @@ export const generateUploadUrl = mutation(async (ctx) => {
     return await ctx.storage.generateUploadUrl();
 });
 
-export const getMetadata = query({
+export const getFile = query({
     args: {
         storageId: v.id("_storage"),
     },
@@ -101,7 +100,7 @@ export const getMetadata = query({
 export const askQuestion = action({
     args: {
         question: v.string(),
-        noteId: v.id("notes"),
+        documentId: v.id("documents"),
     },
     handler: async (ctx, args) => {
 
@@ -111,17 +110,17 @@ export const askQuestion = action({
             throw new ConvexError("Not authorized");
         }
 
-        const note = await ctx.runQuery(api.notes.getNoteById, { id: args.noteId });
+        const document = await ctx.runQuery(api.documents.getDocumentById, { id: args.documentId });
 
-        if (!note) {
-            throw new ConvexError("Note not found");
+        if (!document) {
+            throw new ConvexError("Document not found");
         }
 
-        if (!note.fileId) {
+        if (!document.fileId) {
             throw new ConvexError("File ID not found");
         }
 
-        const file = await ctx.storage.get(note.fileId);
+        const file = await ctx.storage.get(document.fileId);
 
         if (!file) {
             throw new ConvexError("File not found");
@@ -139,7 +138,7 @@ export const askQuestion = action({
                 },
             },
 
-            `Take the given file and understand it properly. ${note.content} This is some additional context. Don't give any response regarding the file unless i asked anything about it. You need to only answer the following question: ${args.question} and interact well try to act friendly.`,
+            `Take the given file and understand it properly. ${document.content} This is some additional context. Don't give any response regarding the file unless i asked anything about it. You need to only answer the following question: ${args.question} and interact well try to act friendly.`,
         ]);
         return result.response.text()
     }

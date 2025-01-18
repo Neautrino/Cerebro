@@ -1,17 +1,22 @@
 "use client";
 
-import {  ArrowLeftToLineIcon, ArrowRightToLineIcon, CheckSquare, FileText, FolderKanban, Settings } from 'lucide-react';
+import { ArrowLeftToLineIcon, ArrowRightToLineIcon, Book, CheckSquare, FileIcon, FileText, FolderKanban, HomeIcon, Link2, Settings, Twitter, Video } from 'lucide-react';
 import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Separator } from '../ui/separator';
 
 
 const sidebarItems = [
-    { icon: FileText, label: 'Notes', href: '/notes' },
-    { icon: CheckSquare, label: 'Tasks', href: '/tasks' },
-    { icon: FolderKanban, label: 'Dashboard', href: '/dashboard' },
+    { id: 0, icon: HomeIcon, label: 'Home', href: '/home' },
+    { id: 1, icon: FileText, label: 'Notes', href: '/notes' },
+    { id: 2, icon: CheckSquare, label: 'Tasks', href: '/tasks' },
+    { id: 4, icon: FileIcon, label: 'Documents', href: '/documents' },
+    { id: 5, icon: Video, label: 'Videos', href: '/videos' },
+    { id: 6, icon: Link2, label: 'Links', href: '/links' },
+    { id: 7, icon: Twitter, label: 'Tweets', href: '/tweets' },
 ];
 
 export default function Sidebar() {
@@ -41,27 +46,36 @@ export default function Sidebar() {
                         {!isCollapsed && (
                             <div>
                                 <h2 className="text-lg font-semibold">Welcome</h2>
-                                <p className='text-[10px] text-gray-400'>Your brain needs some rest</p>
+                                <p className='text-[10px] text-gray-400'>Don't Overload your brain.</p>
                             </div>
                         )}
                     </div>
                     <div className="px-3 flex-1">
                         {sidebarItems.map((item) => (
-                            <Link key={item.href} href={item.href}>
-                                <Button
-                                    variant="ghost"
-                                    className={cn(
-                                        "w-full justify-start my-1",
-                                        pathname === item.href && "bg-accent"
-                                    )}
-                                >
-                                    <item.icon className="mr-2 h-4 w-4" />
-                                    {!isCollapsed && item.label}
-                                </Button>
-                            </Link>
+                            <React.Fragment key={item.id}>
+                                {item.id === 4 && <Separator className="my-2" />}
+                                <Link href={item.href}>
+                                    <Button
+                                        variant="ghost"
+                                        className={cn(
+                                            "w-full justify-start my-1",
+                                            pathname === item.href && "bg-accent"
+                                        )}
+                                    >
+                                        <item.icon className="mr-2 h-4 w-4" />
+                                        {!isCollapsed && item.label}
+                                    </Button>
+                                </Link>
+                            </React.Fragment>
                         ))}
                     </div>
                     <div className="px-3 w-full pr-6">
+                        <Link href="/dashboard">
+                            <Button variant="ghost" className="w-full justify-start">
+                                <FolderKanban className="mr-2 h-4 w-4" />
+                                {!isCollapsed && "Dashboard"}
+                            </Button>
+                        </Link>
                         <Link href="/settings">
                             <Button variant="ghost" className="w-full justify-start">
                                 <Settings className="mr-2 h-4 w-4" />

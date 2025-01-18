@@ -19,15 +19,30 @@ export default defineSchema({
     ),
   }).index("by_user_id", ["userId"]),
 
-  notes: defineTable({
+  documents: defineTable({
     userId: v.string(),
     title: v.string(),
     content: v.optional(v.string()),
-    fileId: v.optional(v.id("_storage")),
+    fileId: v.id("_storage"),
     tags: v.optional(v.array(v.string())),
     updatedTime: v.number(),
   }).index("by_user_id", ["userId"]),
 
+  links: defineTable({
+    userId: v.string(),
+    title: v.string(),
+    description: v.string(),
+    url: v.string(),
+    tags: v.optional(v.array(v.string())),
+  }).index("by_user_id", ["userId"]),
+
+  tweets: defineTable({
+    userId: v.string(),
+    title: v.string(),
+    description: v.string(),
+    url: v.string(),
+    tags: v.optional(v.array(v.string())),
+  }).index("by_user_id", ["userId"]),
 
   tags: defineTable({
     name: v.string(),

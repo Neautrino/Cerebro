@@ -13,8 +13,10 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as notes from "../notes.js";
+import type * as documents from "../documents.js";
+import type * as links from "../links.js";
 import type * as tags from "../tags.js";
+import type * as tweets from "../tweets.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -25,8 +27,10 @@ import type * as tags from "../tags.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  notes: typeof notes;
+  documents: typeof documents;
+  links: typeof links;
   tags: typeof tags;
+  tweets: typeof tweets;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
