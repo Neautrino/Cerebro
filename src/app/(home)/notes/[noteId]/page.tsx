@@ -13,6 +13,9 @@ import { api } from '../../../../../convex/_generated/api';
 import { Id } from '../../../../../convex/_generated/dataModel';
 import ChatPanel from '@/components/notes/ChatPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
+import NotePageSkeleton from '@/components/notes/NotePageSkeleton';
+
 export default function NotePage({ params }: { params: Promise<{ noteId: Id<"notes"> }> }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState<string | null>('');
@@ -33,6 +36,12 @@ export default function NotePage({ params }: { params: Promise<{ noteId: Id<"not
             setContent(note.content || '');
         }
     }, [note]);
+
+    if (!note) {
+        return (
+            <NotePageSkeleton />
+        );
+    }
 
     return (
         <div className="space-y-8">
