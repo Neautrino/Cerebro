@@ -12,6 +12,7 @@ import { useQuery } from 'convex/react';
 import { api } from '../../../../../convex/_generated/api';
 import { Id } from '../../../../../convex/_generated/dataModel';
 import ChatPanel from '@/components/notes/ChatPanel';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 export default function NotePage({ params }: { params: Promise<{ noteId: Id<"notes"> }> }) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState<string | null>('');
@@ -83,16 +84,22 @@ export default function NotePage({ params }: { params: Promise<{ noteId: Id<"not
                     className="min-h-[200px] border-none focus-visible:ring-0 bg-transparent px-0 focus-visible:ring-offset-0 focus-visible:outline-none"
                 />
             </Card>
-
-            <div className="flex gap-8">
+            <Tabs defaultValue="document" className="w-full">
+                <TabsList>
+                    <TabsTrigger value="document">Document</TabsTrigger>
+                    <TabsTrigger value="chat">AI Chat</TabsTrigger>
+                </TabsList>
+                <TabsContent value="document">
                 <div className='flex-1 bg-gray-900 rounded-lg'>
                     {note?.fileUrl && (
-                        <iframe src={note.fileUrl} className="w-full h-[450px] rounded-lg" />
+                        <iframe src={note.fileUrl} className="w-full h-[500px] rounded-lg" />
                     )}
                 </div>
-                <ChatPanel noteId={noteId!} />
-            </div>
-
+                </TabsContent>
+                <TabsContent value="chat">
+                    <ChatPanel noteId={noteId!} />
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

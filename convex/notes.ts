@@ -135,11 +135,12 @@ export const askQuestion = action({
             {
                 inlineData: {
                     data: base64String,
-                    mimeType: "application/pdf",
+                    mimeType: file.type,
                 },
             },
-            'Summarize this document',
+
+            `Take the given file and understand it properly. ${note.content} This is some additional context. Don't give any response regarding the file unless i asked anything about it. You need to only answer the following question: ${args.question} and interact well try to act friendly.`,
         ]);
-        console.log(result.response.text());
+        return result.response.text()
     }
 })
