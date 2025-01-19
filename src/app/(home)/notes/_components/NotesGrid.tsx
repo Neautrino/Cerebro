@@ -4,12 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../../../convex/_generated/api';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { EyeIcon, Trash2Icon } from 'lucide-react';
+import { Trash2Icon } from 'lucide-react';
 import NotesSkeleton from './NotesSkeleton';
 import Image from 'next/image';
 import AddNotesBtn from './AddNotesBtn';
+import NotesSheet from './NotesSheet';
 
 export default function NotesGrid() {
   const notes = useQuery(api.notes.getNotes);
@@ -39,16 +39,13 @@ export default function NotesGrid() {
                 <Badge key={tag} variant="secondary">{tag}</Badge>
               ))}
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center relative">
               <p className="text-sm text-muted-foreground mt-4">
                 Last updated: {new Date(note.updatedTime).toLocaleDateString()}
               </p>
-              <Button variant="secondary" asChild>
-                <Link href={`/notes/${note._id}`} className="flex items-center gap-2">
-                  <EyeIcon className="w-4 h-4" />
-                  View
-                </Link>
-              </Button>
+              <div className="static">
+                <NotesSheet note={note} />
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -66,6 +63,7 @@ export default function NotesGrid() {
           <AddNotesBtn />
         </div>
       )}
+
     </div>
   );
 }
