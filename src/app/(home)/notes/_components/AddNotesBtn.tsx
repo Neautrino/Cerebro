@@ -20,7 +20,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { useMutation } from 'convex/react';
 import UploadingBtn from '@/components/shared/UploadingBtn';
 import { api } from '../../../../../convex/_generated/api';
-import { Id } from '../../../../../convex/_generated/dataModel';
 
 
 const formSchema = z.object({

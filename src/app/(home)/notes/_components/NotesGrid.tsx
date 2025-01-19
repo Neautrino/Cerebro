@@ -12,7 +12,6 @@ import Image from 'next/image';
 import AddNotesBtn from './AddNotesBtn';
 
 export default function NotesGrid() {
-
   const notes = useQuery(api.notes.getNotes);
   const deleteNote = useMutation(api.notes.deleteNote);
 

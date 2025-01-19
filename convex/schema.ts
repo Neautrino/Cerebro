@@ -26,7 +26,13 @@ export default defineSchema({
     content: v.string(),
     tags: v.optional(v.array(v.string())),
     updatedTime: v.number(),
-  }).index("by_user_id", ["userId"]),
+    embedding: v.optional(v.array(v.float64())),
+  }).index("by_user_id", ["userId"])
+  .vectorIndex("by_embedding", {
+    vectorField: "embedding",
+    dimensions: 1536,
+    filterFields: ["userId"],
+  }),
 
   documents: defineTable({
     userId: v.string(),

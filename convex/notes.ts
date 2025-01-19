@@ -1,5 +1,10 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalAction, internalMutation, mutation, query } from "./_generated/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { internal } from "./_generated/api";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
 
 export const getNotes = query({
     handler: async (ctx) => {
@@ -39,6 +44,36 @@ export const getNoteById = query({
     }
 })
 
+const embed = async (content: string) => {
+    const result = await model.embedContent(content);
+    return result.embedding.values;
+}
+
+export const setNoteEmbedding = internalMutation({
+    args: {
+        noteId: v.id("notes"),
+        embedding: v.array(v.float64())
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.noteId, { embedding: args.embedding });
+    }
+})
+
+export const createNoteEmbedding = internalAction({
+    args: {
+        noteId: v.id("notes"),
+        content: v.string()
+    },
+    handler: async (ctx, args) => {
+        const embedding = await embed(args.content);
+
+        await ctx.runMutation(internal.notes.setNoteEmbedding, {
+            noteId: args.noteId,
+            embedding: embedding
+        });
+    }
+})
+
 export const createNote = mutation({
     args: {
         title: v.string(),
@@ -53,14 +88,20 @@ export const createNote = mutation({
             throw new ConvexError("Not authorized");
         }
 
-        const note = await ctx.db.insert("notes", {
+        const noteId = await ctx.db.insert("notes", {
             title: args.title,
             content: args.content,
             userId: user.subject,
             tags: args.tags,
-            updatedTime: Date.now()
+            updatedTime: Date.now(),
         });
-        return note;
+
+        await ctx.scheduler.runAfter(0, internal.notes.createNoteEmbedding, {
+            noteId: noteId,
+            content: args.content
+        })
+
+        return noteId;
     },
 });
 
