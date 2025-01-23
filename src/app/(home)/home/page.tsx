@@ -9,6 +9,7 @@ import ChatPanel from './_components/ChatPanel';
 import { api } from '../../../../convex/_generated/api';
 import { useAction } from 'convex/react';
 import { useState } from 'react';
+import NotesSkeleton from '../notes/_components/NotesSkeleton';
 
 const knowledgeItems = [
   {
@@ -71,7 +72,7 @@ const getIcon = (type: string): React.ReactNode => {
 
 export default function KnowledgeBasePage() {
 
-  const [results, setResults] = useState<typeof api.search.searchAllRecords._returnType> ([]);
+  const [results, setResults] = useState<typeof api.search.searchAllRecords._returnType>([]);
   console.log(results);
 
   return (
@@ -92,7 +93,10 @@ export default function KnowledgeBasePage() {
 
         <TabsContent value="browse" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 mt-8">
-            {results.map((item) => (
+            {results === undefined && Array.from({ length: 4 }).map((_, index) => (
+              <NotesSkeleton key={index} />
+            ))}
+            {results.length > 0 ? (results.map((item) => (
               <Card key={item.data._id} className="hover:bg-accent/50 transition-colors cursor-pointer">
                 <CardHeader>
                   <div className="flex items-center space-x-4">
@@ -119,7 +123,9 @@ export default function KnowledgeBasePage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            ))) : (
+              <NotesSkeleton />
+            )}
           </div>
         </TabsContent>
 

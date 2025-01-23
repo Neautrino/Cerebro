@@ -10,6 +10,7 @@ import NotesSkeleton from './NotesSkeleton';
 import Image from 'next/image';
 import AddNotesBtn from './AddNotesBtn';
 import NotesSheet from './NotesSheet';
+import Illustration from '@/components/shared/Illustration';
 
 export default function NotesGrid() {
   const notes = useQuery(api.notes.getNotes);
@@ -20,7 +21,7 @@ export default function NotesGrid() {
       {notes === undefined && Array.from({ length: 6 }).map((_, index) => (
         <NotesSkeleton key={index} />
       ))}
-      {notes && notes.length > 0 ? notes.map((note) => (
+      {notes && notes.length <= 0 ? notes.map((note) => (
         <Card key={note._id} className="transition-colors flex flex-col">
           <CardHeader>
             <div className="flex justify-between items-center">
@@ -50,18 +51,7 @@ export default function NotesGrid() {
           </CardContent>
         </Card>
       )) : (
-        <div className="flex flex-col col-span-full mt-20 items-center justify-center gap-4">
-          <Image
-            src="/documents_not_found.svg"
-            width={200}
-            height={200}
-            alt="No notes found"
-          />
-          <p className="text-muted-foreground text-lg">
-            No notes found. Create a new note to get started.
-          </p>
-          <AddNotesBtn />
-        </div>
+        <Illustration link="/notes_not_found.svg" title="No notes found" description="Create a new note to get started." type="note" />
       )}
 
     </div>

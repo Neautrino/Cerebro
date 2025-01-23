@@ -146,8 +146,8 @@ export default function AddDocumentsBtn() {
               )}
             />
 
-            <UploadingBtn isLoading={form.formState.isSubmitting} loadingText='Creating...'>
-              Create Entry
+            <UploadingBtn isLoading={form.formState.isSubmitting} loadingText='uploading...'>
+              Upload
             </UploadingBtn>
           </form>
         </Form>
