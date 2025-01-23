@@ -44,7 +44,7 @@ export const getNoteById = query({
     }
 })
 
-const embed = async (content: string) => {
+export const embed = async (content: string) => {
     const result = await model.embedContent(content);
     return result.embedding.values;
 }

@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Search, FileText, Video, Link2, Twitter, FileIcon, Send, Bot } from 'lucide-react';
+import { FileText, Video, Link2, Twitter, FileIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import SearchBar from './_components/SearchBar';
+import ChatPanel from './_components/ChatPanel';
+import { api } from '../../../../convex/_generated/api';
+import { useAction } from 'convex/react';
+import { useState } from 'react';
 
 const knowledgeItems = [
   {
@@ -57,41 +58,30 @@ const knowledgeItems = [
   },
 ];
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
+const getIcon = (type: string): React.ReactNode => {
+  switch (type) {
+    case 'note': return <FileText className="h-5 w-5" />;
+    case 'document': return <FileIcon className="h-5 w-5" />;
+    case 'video': return <Video className="h-5 w-5" />;
+    case 'link': return <Link2 className="h-5 w-5" />;
+    case 'tweet': return <Twitter className="h-5 w-5" />;
+    default: return <FileText className="h-5 w-5" />;
+  }
 }
 
 export default function KnowledgeBasePage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [currentMessage, setCurrentMessage] = useState('');
 
-  const filteredItems = knowledgeItems.filter(item =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
-  const handleSendMessage = () => {
-    if (!currentMessage.trim()) return;
-    
-    setMessages([...messages, { role: 'user', content: currentMessage }]);
-    // Simulate AI response
-    setTimeout(() => {
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'I understand you\'re asking about ' + currentMessage + '. Let me help you with that...'
-      }]);
-    }, 1000);
-    setCurrentMessage('');
-  };
+  const [results, setResults] = useState<typeof api.search.searchAllRecords._returnType> ([]);
+  console.log(results);
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Knowledge Base</h2>
-        <p className="text-muted-foreground">All your knowledge in one place</p>
+      <div className="flex gap-4 justify-between items-center">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Knowledge Base</h2>
+          <p className="text-muted-foreground">All your knowledge in one place</p>
+        </div>
+        <SearchBar setRecords={setResults} />
       </div>
 
       <Tabs defaultValue="browse">
@@ -101,37 +91,29 @@ export default function KnowledgeBasePage() {
         </TabsList>
 
         <TabsContent value="browse" className="space-y-6">
-          <div className="relative w-full max-w-sm">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search knowledge base..." 
-              className="pl-8"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {filteredItems.map((item) => (
-              <Card key={item.id} className="hover:bg-accent/50 transition-colors cursor-pointer">
+          <div className="grid gap-6 md:grid-cols-2 mt-8">
+            {results.map((item) => (
+              <Card key={item.data._id} className="hover:bg-accent/50 transition-colors cursor-pointer">
                 <CardHeader>
                   <div className="flex items-center space-x-4">
                     <div className="h-10 w-10 rounded bg-accent flex items-center justify-center">
-                      <item.icon className="h-5 w-5" />
+                      {getIcon(item.type)}
                     </div>
                     <div>
-                      <CardTitle className="text-xl">{item.title}</CardTitle>
+                      <CardTitle className="text-xl">{item.data.title}</CardTitle>
                       <p className="text-sm text-muted-foreground">
-                        Added: {item.date}
+                        Added: {new Date(item.data.updatedTime).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4">{item.excerpt}</p>
+                  <p className="text-muted-foreground mb-4">
+                    {('content' in item.data ? item.data.content : 'description' in item.data ? item.data.description : '')?.slice(0, 100)}...
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="secondary">{item.type}</Badge>
-                    {item.tags.map((tag) => (
+                    {item.data.tags?.map((tag) => (
                       <Badge key={tag} variant="outline">{tag}</Badge>
                     ))}
                   </div>
@@ -142,48 +124,7 @@ export default function KnowledgeBasePage() {
         </TabsContent>
 
         <TabsContent value="ai" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center space-x-2">
-                <Bot className="h-5 w-5" />
-                <CardTitle>Chat with AI Assistant</CardTitle>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Ask questions about your knowledge base and get intelligent answers
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-4 h-[400px] overflow-y-auto border rounded-lg p-4">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === 'user'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted'
-                      }`}
-                    >
-                      {message.content}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="Ask a question..."
-                  value={currentMessage}
-                  onChange={(e) => setCurrentMessage(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                />
-                <Button onClick={handleSendMessage}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <ChatPanel />
         </TabsContent>
       </Tabs>
     </div>

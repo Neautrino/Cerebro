@@ -1,7 +1,8 @@
 import { ConvexError, v } from "convex/values";
-import { action, mutation, query } from "./_generated/server";
-import { api } from "./_generated/api";
+import { action, internalAction, internalMutation, mutation, query } from "./_generated/server";
+import { api, internal } from "./_generated/api";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { embed } from "./notes";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -47,6 +48,31 @@ export const getDocumentById = query({
     }
 })
 
+export const setDocumentEmbedding = internalMutation({
+    args: {
+        documentId: v.id("documents"),
+        embedding: v.array(v.float64())
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.documentId, { embedding: args.embedding });
+    }
+})
+
+export const createDocumentEmbedding = internalAction({
+    args: {
+        documentId: v.id("documents"),
+        content: v.string()
+    },
+    handler: async (ctx, args) => {
+        const embedding = await embed(args.content);
+
+        await ctx.runMutation(internal.documents.setDocumentEmbedding, {
+            documentId: args.documentId,
+            embedding: embedding
+        });
+    }
+})
+
 export const createDocument = mutation({
     args: {
         title: v.string(),
@@ -61,7 +87,7 @@ export const createDocument = mutation({
             throw new ConvexError("Not authorized");
         }
 
-        const document = await ctx.db.insert("documents", {
+        const documentId = await ctx.db.insert("documents", {
             title: args.title,
             content: args.content,
             fileId: args.fileId,
@@ -69,7 +95,24 @@ export const createDocument = mutation({
             updatedTime: Date.now(),
             tags: args.tags
         });
-        return document;
+
+        let generatedContent = args.content;
+
+        if (args.content === undefined) {
+            generatedContent =  await ctx.scheduler.runAfter(0, api.documents.askQuestion, {
+                question: "Generate a summary of the document",
+                documentId: documentId
+            });
+
+            await ctx.db.patch(documentId, { content: generatedContent });
+        }
+
+        await ctx.scheduler.runAfter(0, internal.documents.createDocumentEmbedding, {
+            documentId: documentId,
+            content: generatedContent ?? ""
+        });
+
+        return documentId;
     },
 });
 

@@ -1,6 +1,5 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { title } from "process";
 
 export default defineSchema({
   users: defineTable({
@@ -30,7 +29,7 @@ export default defineSchema({
   }).index("by_user_id", ["userId"])
   .vectorIndex("by_embedding", {
     vectorField: "embedding",
-    dimensions: 1536,
+    dimensions: 768,
     filterFields: ["userId"],
   }),
 
@@ -41,7 +40,13 @@ export default defineSchema({
     fileId: v.id("_storage"),
     tags: v.optional(v.array(v.string())),
     updatedTime: v.number(),
-  }).index("by_user_id", ["userId"]),
+    embedding: v.optional(v.array(v.float64())),
+  }).index("by_user_id", ["userId"])
+  .vectorIndex("by_embedding", {
+    vectorField: "embedding",
+    dimensions: 768,
+    filterFields: ["userId"],
+  }),
 
   links: defineTable({
     userId: v.string(),
@@ -49,17 +54,41 @@ export default defineSchema({
     description: v.string(),
     url: v.string(),
     tags: v.optional(v.array(v.string())),
-  }).index("by_user_id", ["userId"]),
+    updatedTime: v.number(),
+    embedding: v.optional(v.array(v.float64())),
+  }).index("by_user_id", ["userId"])
+  .vectorIndex("by_embedding", {
+    vectorField: "embedding",
+    dimensions: 768,
+    filterFields: ["userId"],
+  }),
 
   tweets: defineTable({
     userId: v.string(),
     title: v.string(),
     description: v.string(),
     url: v.string(),
+    updatedTime: v.number(),
     tags: v.optional(v.array(v.string())),
-  }).index("by_user_id", ["userId"]),
+    embedding: v.optional(v.array(v.float64())),
+  }).index("by_user_id", ["userId"])
+  .vectorIndex("by_embedding", {
+    vectorField: "embedding",
+    dimensions: 768,
+    filterFields: ["userId"],
+  }),
 
   tags: defineTable({
     name: v.string(),
   }),
+
+  chats: defineTable({
+    userId: v.string(),
+    messages: v.array(v.object({
+      role: v.union(v.literal("user"), v.literal("assistant")),
+      content: v.string(),
+      timestamp: v.number(),
+    })),
+    title: v.optional(v.string()),
+  }).index("by_user_id", ["userId"]),
 });
