@@ -41,12 +41,12 @@ function TweetCard({ tweet }: { tweet: Tweet }) {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-base mb-4">{tweet.content}</p>
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <p className="text-base mb-4 text-muted-foreground line-clamp-2">{tweet.content}</p>
+              <div className="flex items-center justify-between text-sm text-muted-foreground ">
                 <div className="flex space-x-4">
-                  {tweet.tags?.map((tag) => {
-                    return <Badge variant="secondary">{tag}</Badge>
-                  })}
+                  {tweet.tags?.map((tag) =>(
+                    <Badge key={tag} variant="secondary">{tag}</Badge>
+                  ))}
                 </div>
                 <span>{new Date(tweet.updatedTime).toLocaleDateString()}</span>
               </div>

@@ -16,10 +16,12 @@ export default function NotesGrid() {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {notes === undefined && Array.from({ length: 6 }).map((_, index) => (
-        <NotesSkeleton key={index} />
-      ))}
-      {notes && notes.length <= 0 ? notes.map((note) => (
+
+      {notes === undefined ? (
+        Array.from({ length: 6 }).map((_, index) => (
+          <NotesSkeleton key={index} />
+        ))
+      ) : (notes.length > 0 ? notes.map((note) => (
         <Card key={note._id} className="transition-colors flex flex-col">
           <CardHeader>
             <div className="flex justify-between items-center">
@@ -50,7 +52,7 @@ export default function NotesGrid() {
         </Card>
       )) : (
         <Illustration link="/notes_not_found.svg" title="No notes found" description="Create a new note to get started." type="note" />
-      )}
+      ))}
 
     </div>
   );
