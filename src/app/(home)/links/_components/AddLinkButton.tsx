@@ -26,8 +26,8 @@ const formSchema = z.object({
   title: z.string({
     required_error: 'Title is required'
   }),
-  description: z.string({
-    required_error: 'Description is required'
+  content: z.string({
+    required_error: 'content is required'
   }),
   url: z.string({
     required_error: 'Url is required'
@@ -40,7 +40,7 @@ export default function AddLinksButton() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      description: '',
+      content: '',
       url: '',
       tags: []
     },
@@ -55,7 +55,7 @@ export default function AddLinksButton() {
     
     await createLink({ 
       title: values.title, 
-      description: values.description,
+      content: values.content,
       url: values.url,
       tags: uniqueTags,
     });
@@ -97,7 +97,7 @@ export default function AddLinksButton() {
             />
             <FormField
               control={form.control}
-              name="description"
+              name="content"
               render={({ field }) => (
                 <FormItem className="space-y-2">
                   <FormLabel htmlFor="content">Description</FormLabel>

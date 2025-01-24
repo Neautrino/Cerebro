@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAction } from 'convex/react'
 import { api } from '../../../../../convex/_generated/api'
+import { useEffect } from 'react'
 
 
 const formSchema = z.object({
@@ -31,6 +32,14 @@ function SearchBar({ setRecords }: { setRecords: (records: typeof api.search.sea
        form.reset();
        setRecords(results);
     }
+
+    useEffect(() => {
+        async function fetchDataOnMount() {
+            const results = await searchAllRecords({ search: '' });
+            setRecords(results);
+        }
+        fetchDataOnMount();
+    }, []);
 
     return (
         <div className="relative flex-1 max-w-2xl mr-4">

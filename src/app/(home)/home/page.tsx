@@ -11,53 +11,6 @@ import { useAction } from 'convex/react';
 import { useState } from 'react';
 import NotesSkeleton from '../notes/_components/NotesSkeleton';
 
-const knowledgeItems = [
-  {
-    id: 1,
-    title: 'Getting Started with Next.js 13',
-    type: 'note',
-    excerpt: 'A comprehensive guide to the latest features in Next.js 13...',
-    tags: ['nextjs', 'react', 'development'],
-    date: '2024-03-25',
-    icon: FileText,
-  },
-  {
-    id: 2,
-    title: 'System Architecture Documentation',
-    type: 'document',
-    excerpt: 'Technical documentation for the new system architecture...',
-    tags: ['architecture', 'technical'],
-    date: '2024-03-24',
-    icon: FileIcon,
-  },
-  {
-    id: 3,
-    title: 'Advanced React Patterns',
-    type: 'video',
-    excerpt: 'Learn advanced React patterns and best practices...',
-    tags: ['react', 'advanced'],
-    date: '2024-03-23',
-    icon: Video,
-  },
-  {
-    id: 4,
-    title: 'UI/UX Design Principles',
-    type: 'link',
-    excerpt: 'Essential principles for modern UI/UX design...',
-    tags: ['design', 'ui', 'ux'],
-    date: '2024-03-22',
-    icon: Link2,
-  },
-  {
-    id: 5,
-    title: 'Web Performance Tips',
-    type: 'tweet',
-    excerpt: 'Thread on improving web application performance...',
-    tags: ['performance', 'web'],
-    date: '2024-03-21',
-    icon: Twitter,
-  },
-];
 
 const getIcon = (type: string): React.ReactNode => {
   switch (type) {
@@ -93,39 +46,39 @@ export default function KnowledgeBasePage() {
 
         <TabsContent value="browse" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 mt-8">
-            {results === undefined && Array.from({ length: 4 }).map((_, index) => (
+            {results === undefined ? (Array.from({ length: 4 }).map((_, index) => (
               <NotesSkeleton key={index} />
-            ))}
-            {results.length > 0 ? (results.map((item) => (
-              <Card key={item.data._id} className="hover:bg-accent/50 transition-colors cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="h-10 w-10 rounded bg-accent flex items-center justify-center">
-                      {getIcon(item.type)}
+            ))) :
+              results.length > 0 ? (results.map((item) => (
+                <Card key={item.data._id} className="hover:bg-accent/50 transition-colors cursor-pointer">
+                  <CardHeader>
+                    <div className="flex items-center space-x-4">
+                      <div className="h-10 w-10 rounded bg-accent flex items-center justify-center">
+                        {getIcon(item.type)}
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl">{item.data.title}</CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                          Added: {new Date(item.data.updatedTime).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <CardTitle className="text-xl">{item.data.title}</CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        Added: {new Date(item.data.updatedTime).toLocaleDateString()}
-                      </p>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4">
+                      {('content' in item.data ? item.data.content : 'description' in item.data ? item.data.description : '')?.slice(0, 100)}...
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary">{item.type}</Badge>
+                      {item.data.tags?.map((tag) => (
+                        <Badge key={tag} variant="outline">{tag}</Badge>
+                      ))}
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    {('content' in item.data ? item.data.content : 'description' in item.data ? item.data.description : '')?.slice(0, 100)}...
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary">{item.type}</Badge>
-                    {item.data.tags?.map((tag) => (
-                      <Badge key={tag} variant="outline">{tag}</Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))) : (
-              <NotesSkeleton />
-            )}
+                  </CardContent>
+                </Card>
+              ))) : (
+                <NotesSkeleton />
+              )}
           </div>
         </TabsContent>
 

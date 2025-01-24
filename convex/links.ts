@@ -1,5 +1,7 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalAction, internalMutation, mutation, query } from "./_generated/server";
+import { embed } from "./notes";
+import { internal } from "./_generated/api";
 
 export const getLinks = query({
     handler: async (ctx) => {
@@ -39,10 +41,35 @@ export const getLinkById = query({
     }
 })
 
+export const setLinkEmbedding = internalMutation({
+    args: {
+        linkId: v.id("links"),
+        embedding: v.array(v.float64())
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.linkId, { embedding: args.embedding });
+    }
+})
+
+export const createLinkEmbedding = internalAction({
+    args: {
+        linkId: v.id("links"),
+        content: v.string()
+    },
+    handler: async (ctx, args) => {
+        const embedding = await embed(args.content);
+
+        await ctx.runMutation(internal.links.setLinkEmbedding, {
+            linkId: args.linkId,
+            embedding: embedding
+        });
+    }
+})
+
 export const createLink = mutation({
     args: {
         title: v.string(),
-        description: v.string(),
+        content: v.string(),
         url: v.string(),
         tags: v.optional(v.array(v.string())),
     },
@@ -54,14 +81,21 @@ export const createLink = mutation({
             throw new ConvexError("Not authorized");
         }
 
-        const link = await ctx.db.insert("links", {
+        const linkId = await ctx.db.insert("links", {
             title: args.title,
-            description: args.description,
+            content: args.content,
             url: args.url,
             userId: user.subject,
-            tags: args.tags
+            tags: args.tags,
+            updatedTime: Date.now(),
         });
-        return link;
+
+        await ctx.scheduler.runAfter(0, internal.links.createLinkEmbedding, {
+            linkId: linkId,
+            content: args.content
+        })
+
+        return linkId;
     },
 });
 

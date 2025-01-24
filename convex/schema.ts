@@ -51,7 +51,7 @@ export default defineSchema({
   links: defineTable({
     userId: v.string(),
     title: v.string(),
-    description: v.string(),
+    content: v.string(),
     url: v.string(),
     tags: v.optional(v.array(v.string())),
     updatedTime: v.number(),

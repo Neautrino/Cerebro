@@ -8,11 +8,11 @@ import { Id } from '../../../../../convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { api } from '../../../../../convex/_generated/api';
 
-interface LinkProps{
+interface LinkProps {
     _id: Id<'links'>;
     userId: string;
     title: string;
-    description: string;
+    content: string;
     url: string;
     tags?: string[];
     _creationTime: number;
@@ -31,12 +31,12 @@ function LinksCard({ link }: { link: LinkProps }) {
                 <div className="flex items-start justify-between">
                     <div className="space-y-1">
                         <div className='flex items-center justify-between gap-4'>
-                        <CardTitle className="text-xl">{link.title}</CardTitle>
-                        <Button variant="ghost" size="icon" asChild>
-                        <a href={link.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
-                        </a>
-                    </Button>
+                            <CardTitle className="text-xl">{link.title}</CardTitle>
+                            <Button variant="ghost" size="icon" asChild>
+                                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                    <ExternalLink className="h-4 w-4" />
+                                </a>
+                            </Button>
                         </div>
                         <div className="flex items-center text-sm text-muted-foreground">
                             <Globe className="h-4 w-4 mr-1" />
@@ -49,7 +49,7 @@ function LinksCard({ link }: { link: LinkProps }) {
                 </div>
             </CardHeader>
             <CardContent>
-                <p className="text-muted-foreground mb-4">{link.description}</p>
+                <p className="text-muted-foreground mb-4">{link.content}</p>
                 <div className="flex items-center justify-between">
                     <div className="flex gap-2">
                         {link.tags?.map((tag: any) => (

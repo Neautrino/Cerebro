@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {  Twitter, Trash2Icon } from 'lucide-react';
+import {  Twitter, Trash2Icon, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Id } from '../../../../../convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
@@ -29,8 +29,13 @@ function TweetCard({ tweet }: { tweet: Tweet }) {
                   <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center">
                     <Twitter className="h-5 w-5" />
                   </div>
-                  <div>
+                  <div className="flex items-center gap-4">
                     <CardTitle className="text-base">{tweet.title || "Untitled"}</CardTitle>
+                    <Button variant="ghost" size="icon" asChild>
+                                <a href={tweet.url} target="_blank" rel="noopener noreferrer">
+                                    <ExternalLink className="h-4 w-4" />
+                                </a>
+                            </Button>
                   </div>
                 </div>
                 <Button variant="ghost" onClick={() => {

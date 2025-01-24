@@ -6,7 +6,7 @@ import React from 'react'
 
 function Illustration({ link, title, description, type }: { link: string, title: string, description: string, type: string }) {
   return (
-    <div className="flex flex-col col-span-full mt-20 items-center justify-center gap-4">
+    <div className="flex flex-col col-span-full mt-28 items-center justify-center gap-4">
           <Image
             src={link}
             width={200}
