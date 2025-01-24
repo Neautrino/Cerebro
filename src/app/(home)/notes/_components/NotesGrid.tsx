@@ -7,8 +7,6 @@ import { api } from '../../../../../convex/_generated/api';
 import { Button } from '@/components/ui/button';
 import { Trash2Icon } from 'lucide-react';
 import NotesSkeleton from './NotesSkeleton';
-import Image from 'next/image';
-import AddNotesBtn from './AddNotesBtn';
 import NotesSheet from './NotesSheet';
 import Illustration from '@/components/shared/Illustration';
 

@@ -1,5 +1,7 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalAction, internalMutation, mutation, query } from "./_generated/server";
+import { embed } from "./notes";
+import { internal } from "./_generated/api";
 
 export const getTweets = query({
     handler: async (ctx) => {
@@ -39,10 +41,35 @@ export const getTweetById = query({
     }
 })
 
+export const setTweetEmbedding = internalMutation({
+    args: {
+        tweetId: v.id("tweets"),
+        embedding: v.array(v.float64())
+    },
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.tweetId, { embedding: args.embedding });
+    }
+})
+
+export const createTweetEmbedding = internalAction({
+    args: {
+        tweetId: v.id("tweets"),
+        content: v.string()
+    },
+    handler: async (ctx, args) => {
+        const embedding = await embed(args.content);
+
+        await ctx.runMutation(internal.tweets.setTweetEmbedding, {
+            tweetId: args.tweetId,
+            embedding: embedding
+        });
+    }
+})
+
 export const createTweet = mutation({
     args: {
         title: v.string(),
-        description: v.string(),
+        content: v.string(),
         url: v.string(),
         tags: v.optional(v.array(v.string())),
     },
@@ -54,32 +81,39 @@ export const createTweet = mutation({
             throw new ConvexError("Not authorized");
         }
 
-        const link = await ctx.db.insert("tweets", {
+        const tweetId = await ctx.db.insert("tweets", {
             title: args.title,
-            description: args.description,
+            content: args.content,
             url: args.url,
             userId: user.subject,
-            tags: args.tags
+            tags: args.tags,
+            updatedTime: Date.now(),
         });
-        return link;
+
+        await ctx.scheduler.runAfter(0, internal.tweets.createTweetEmbedding, {
+            tweetId: tweetId,
+            content: args.content
+        })
+
+        return tweetId;
     },
 });
 
-export const deleteLink = mutation({
-    args: { id: v.id("links") },
+export const deleteTweet = mutation({
+    args: { id: v.id("tweets") },
     handler: async (ctx, args) => {
         const userId = await ctx.auth.getUserIdentity();
         if (!userId) {
             throw new ConvexError("Not authorized");
         }
 
-        const link = await ctx.db.get(args.id);
+        const tweet = await ctx.db.get(args.id);
 
-        if (!link) {
-            throw new ConvexError("Link not found");
+        if (!tweet) {
+            throw new ConvexError("Tweet not found");
         }
 
-        if (link.userId !== userId.subject) {
+        if (tweet.userId !== userId.subject) {
             throw new ConvexError("Not authorized");
         }
 

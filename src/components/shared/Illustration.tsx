@@ -1,5 +1,6 @@
 import AddDocumentsBtn from '@/app/(home)/documents/_components/AddDocumentsBtn'
 import AddNotesBtn from '@/app/(home)/notes/_components/AddNotesBtn'
+import AddTweetsBtn from '@/app/(home)/tweets/_components/AddTweetsBtn'
 import Image from 'next/image'
 import React from 'react'
 
@@ -12,14 +13,15 @@ function Illustration({ link, title, description, type }: { link: string, title:
             height={200}
             alt="No notes found"
           />
+          <h2 className="text-2xl font-bold">{title}</h2>
           <p className="text-muted-foreground text-lg">
-            No notes found. Create a new note to get started.
+            {description}
           </p>
           {type==="note" && <AddNotesBtn />}
           {/* {type==="link" && <AddLinksBtn />} */}
           {type==="document" && <AddDocumentsBtn />}
           {/* {type==="video" && <AddVideosBtn />} */}
-          
+          {type==="tweets" && <AddTweetsBtn />}
         </div>
   )
 }
