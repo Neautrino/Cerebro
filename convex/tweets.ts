@@ -72,6 +72,7 @@ export const createTweet = mutation({
         content: v.string(),
         url: v.string(),
         tags: v.optional(v.array(v.string())),
+        author: v.string(),
     },
 
     handler: async (ctx, args) => {
@@ -88,6 +89,7 @@ export const createTweet = mutation({
             userId: user.subject,
             tags: args.tags,
             updatedTime: Date.now(),
+            author: args.author
         });
 
         await ctx.scheduler.runAfter(0, internal.tweets.createTweetEmbedding, {

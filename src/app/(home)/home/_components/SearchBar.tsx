@@ -33,13 +33,13 @@ function SearchBar({ setRecords }: { setRecords: (records: typeof api.search.sea
        setRecords(results);
     }
 
-    useEffect(() => {
-        async function fetchDataOnMount() {
-            const results = await searchAllRecords({ search: '' });
-            setRecords(results);
-        }
-        fetchDataOnMount();
-    }, []);
+    // useEffect(() => {
+    //     async function fetchDataOnMount() {
+    //         const results = await searchAllRecords({ search: '' });
+    //         setRecords(results);
+    //     }
+    //     fetchDataOnMount();
+    // }, []);
 
     return (
         <div className="relative flex-1 max-w-2xl mr-4">

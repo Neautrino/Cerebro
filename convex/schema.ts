@@ -66,6 +66,7 @@ export default defineSchema({
   tweets: defineTable({
     userId: v.string(),
     title: v.string(),
+    author: v.optional(v.string()),
     content: v.string(),
     url: v.string(),
     updatedTime: v.number(),

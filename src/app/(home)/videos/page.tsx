@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Plus, ExternalLink } from 'lucide-react';
+import AddVideoBtn from './_components/AddVideoBtn';
 
 const videos = [
   {
@@ -32,15 +33,7 @@ export default function VideosPage() {
           <h2 className="text-3xl font-bold tracking-tight">Videos</h2>
           <p className="text-muted-foreground">Save and organize important videos</p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Video
-        </Button>
-      </div>
-
-      <div className="relative w-full max-w-sm">
-        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Search videos..." className="pl-8" />
+        <AddVideoBtn />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

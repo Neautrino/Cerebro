@@ -27,6 +27,7 @@ const formSchema = z.object({
     required_error: 'Title is required'
   }),
   content: z.string(),
+  author: z.string().optional(),
   url: z.string(),
   tags: z.array(z.string()).optional()
 })
@@ -37,6 +38,7 @@ export default function AddNotesBtn() {
     defaultValues: {
       title: '',
       content: '',
+      author: '',
       url: '',
       tags: []
     },
@@ -52,6 +54,7 @@ export default function AddNotesBtn() {
     await createTweet({ 
       title: values.title, 
       content: values.content,
+      author: values.author || '',
       url: values.url,
       tags: uniqueTags,
     });
@@ -85,6 +88,21 @@ export default function AddNotesBtn() {
                       placeholder="Enter tweet title..."
                       {...field}
                       required
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="author"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel htmlFor="author">Author</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter tweet author here..."
+                      {...field}
                     />
                   </FormControl>
                 </FormItem>

@@ -66,7 +66,7 @@ export default function KnowledgeBasePage() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground mb-4">
-                      {('content' in item.data ? item.data.content : 'description' in item.data ? item.data.description : '')?.slice(0, 100)}...
+                      {item.data.content.slice(0, 100)}...
                     </p>
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="secondary">{item.type}</Badge>

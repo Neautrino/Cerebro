@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {  Twitter, Trash2Icon, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ interface Tweet {
     _id: Id<"tweets">;
     userId: string;
     title: string;
+    author: string;
     content: string;
     url: string;
     updatedTime: number;
@@ -30,7 +31,10 @@ function TweetCard({ tweet }: { tweet: Tweet }) {
                     <Twitter className="h-5 w-5" />
                   </div>
                   <div className="flex items-center gap-4">
-                    <CardTitle className="text-base">{tweet.title || "Untitled"}</CardTitle>
+                    <div className="flex flex-col">
+                      <CardTitle className="text-base">{tweet.title || "Untitled"}</CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">@ {tweet.author}</CardDescription>
+                    </div>
                     <Button variant="ghost" size="icon" asChild>
                                 <a href={tweet.url} target="_blank" rel="noopener noreferrer">
                                     <ExternalLink className="h-4 w-4" />
