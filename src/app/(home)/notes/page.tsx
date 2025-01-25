@@ -1,5 +1,3 @@
-'use client';
-
 import AddNotesBtn from "./_components/AddNotesBtn";
 import NotesGrid from "./_components/NotesGrid";
 

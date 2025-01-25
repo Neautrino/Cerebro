@@ -1,4 +1,4 @@
-import { Brain, Search } from "lucide-react"
+import { Brain } from "lucide-react"
 import { ThemeToggle } from "../theme-toggle"
 import UserBtn from "./UserBtn"
 

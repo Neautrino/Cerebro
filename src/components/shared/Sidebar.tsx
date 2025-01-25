@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftToLineIcon, ArrowRightToLineIcon, Book, CheckSquare, FileIcon, FileText, FolderKanban, HomeIcon, Link2, Settings, Twitter, Video } from 'lucide-react';
+import { ArrowLeftToLineIcon, ArrowRightToLineIcon, CheckSquare, FileIcon, FileText, FolderKanban, HomeIcon, Link2, Settings, Twitter, Video } from 'lucide-react';
 import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import { Button } from '../ui/button';

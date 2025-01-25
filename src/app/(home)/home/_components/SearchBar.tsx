@@ -9,13 +9,13 @@ import { z } from 'zod'
 import { useAction } from 'convex/react'
 import { api } from '../../../../../convex/_generated/api'
 import { useEffect } from 'react'
-
+import { Button } from '@/components/ui/button'
 
 const formSchema = z.object({
     search: z.string()
 })
 
-function SearchBar({ setRecords }: { setRecords: (records: typeof api.search.searchAllRecords._returnType) => void }) {
+function SearchBar() {
 
     const searchAllRecords = useAction(api.search.searchAllRecords);
 
@@ -27,10 +27,10 @@ function SearchBar({ setRecords }: { setRecords: (records: typeof api.search.sea
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-       const results = await searchAllRecords({ search: values.search });
-       console.log(results);
-       form.reset();
-       setRecords(results);
+        console.log(values.search);
+        form.reset();
+        const results = await searchAllRecords({ search: values.search });
+        console.log(results);
     }
 
     // useEffect(() => {
@@ -50,7 +50,6 @@ function SearchBar({ setRecords }: { setRecords: (records: typeof api.search.sea
                         name="search"
                         render={({ field }) => (
                             <FormItem>
-                                <Search className="absolute left-3 top-1/2 h-6 w-6 text-muted-foreground -translate-y-1/4" />
                                 <FormControl>
                                     <Input
                                         className="pl-14 md:text-xl h-16"
@@ -62,6 +61,9 @@ function SearchBar({ setRecords }: { setRecords: (records: typeof api.search.sea
                             </FormItem>
                         )}
                     />
+                    <Button type="submit" className="absolute right-3 top-1/2 h-10 w-10 -translate-y-1/2">
+                        <Search className="h-6 w-6" />
+                    </Button>
                 </form>
             </Form>
         </div>

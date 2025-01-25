@@ -1,7 +1,5 @@
 'use client';
 
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import AddDocumentsBtn from "./_components/AddDocumentsBtn";
 import DocumentsCard from './_components/DocumentsCard';
 import { useQuery } from 'convex/react';

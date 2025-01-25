@@ -5,7 +5,6 @@ import { api } from '../../../../convex/_generated/api';
 import { useQuery } from 'convex/react';
 import Illustration from '@/components/shared/Illustration';
 import AddTweetsBtn from './_components/AddTweetsBtn';
-import TweetsSkeleton from './_components/TweetsSkeleton';
 import TweetSkeleton from './_components/TweetsSkeleton';
 
 

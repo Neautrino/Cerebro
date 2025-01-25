@@ -54,7 +54,7 @@ function DocumentsCard({ doc }: DocumentsCardProps) {
     }
 
     return (
-        <Card key={doc._id}>
+        <Card>
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
