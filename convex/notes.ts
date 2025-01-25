@@ -1,10 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { internalAction, internalMutation, mutation, query } from "./_generated/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { internal } from "./_generated/api";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
-const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+import { embed } from "./search";
 
 export const getNotes = query({
     handler: async (ctx) => {
@@ -43,11 +40,6 @@ export const getNoteById = query({
         return note;
     }
 })
-
-export const embed = async (content: string) => {
-    const result = await model.embedContent(content);
-    return result.embedding.values;
-}
 
 export const setNoteEmbedding = internalMutation({
     args: {

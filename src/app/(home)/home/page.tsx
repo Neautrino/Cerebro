@@ -10,7 +10,20 @@ import { api } from '../../../../convex/_generated/api';
 import { useAction } from 'convex/react';
 import { useState } from 'react';
 import NotesSkeleton from '../notes/_components/NotesSkeleton';
+import { Id } from '../../../../convex/_generated/dataModel';
 
+interface SearchResultData {
+  _id: Id<"notes" | "documents" | "links" | "tweets">;
+  title: string;
+  content?: string;
+  updatedTime: number;
+  tags?: string[];
+}
+
+interface SearchResult {
+  type: string;
+  data: SearchResultData;
+}
 
 const getIcon = (type: string): React.ReactNode => {
   switch (type) {
@@ -24,8 +37,7 @@ const getIcon = (type: string): React.ReactNode => {
 }
 
 export default function KnowledgeBasePage() {
-
-  const [results, setResults] = useState<typeof api.search.searchAllRecords._returnType>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   console.log(results);
 
   return (
@@ -66,7 +78,7 @@ export default function KnowledgeBasePage() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground mb-4">
-                      {item.data.content.slice(0, 100)}...
+                      {item.data.content?.slice(0, 100)}...
                     </p>
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="secondary">{item.type}</Badge>

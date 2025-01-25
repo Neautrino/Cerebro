@@ -1,6 +1,6 @@
 import { ConvexError, v } from "convex/values";
 import { internalAction, internalMutation, mutation, query } from "./_generated/server";
-import { embed } from "./notes";
+import { embed } from "./search";
 import { internal } from "./_generated/api";
 
 export const getLinks = query({

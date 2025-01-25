@@ -2,7 +2,7 @@ import { ConvexError, v } from "convex/values";
 import { action, internalAction, internalMutation, mutation, query } from "./_generated/server";
 import { api, internal } from "./_generated/api";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { embed } from "./notes";
+import { embed } from "./search";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });

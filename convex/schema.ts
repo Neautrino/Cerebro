@@ -29,7 +29,7 @@ export default defineSchema({
   }).index("by_user_id", ["userId"])
   .vectorIndex("by_embedding", {
     vectorField: "embedding",
-    dimensions: 768,
+    dimensions: 3072,
     filterFields: ["userId"],
   }),
 
@@ -44,7 +44,7 @@ export default defineSchema({
   }).index("by_user_id", ["userId"])
   .vectorIndex("by_embedding", {
     vectorField: "embedding",
-    dimensions: 768,
+    dimensions: 3072,
     filterFields: ["userId"],
   }),
 
@@ -59,7 +59,7 @@ export default defineSchema({
   }).index("by_user_id", ["userId"])
   .vectorIndex("by_embedding", {
     vectorField: "embedding",
-    dimensions: 768,
+    dimensions: 3072,
     filterFields: ["userId"],
   }),
 
@@ -75,7 +75,7 @@ export default defineSchema({
   }).index("by_user_id", ["userId"])
   .vectorIndex("by_embedding", {
     vectorField: "embedding",
-    dimensions: 768,
+    dimensions: 3072,
     filterFields: ["userId"],
   }),
 
