@@ -27,20 +27,28 @@ export const embed = async (content: string) => {
 //     return response.data[0].embedding
 // }
 
+type SearchResult = 
+  | { type: "note"; data: Doc<"notes">; score: number }
+  | { type: "document"; data: Doc<"documents">; score: number }
+  | { type: "link"; data: Doc<"links">; score: number }
+  | { type: "tweet"; data: Doc<"tweets">; score: number };
+
 export const searchAllRecords = action({
   args: {
     search: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<SearchResult[]> => {
     const userId = await ctx.auth.getUserIdentity();
     if (!userId) {
       throw new ConvexError("Not authorized");
     }
 
     const embedding = await embed(args.search);
+    const similarityThreshold = 0.7;
 
     const noteResults = await ctx.vectorSearch("notes", "by_embedding", {
       vector: embedding,
+      limit: 16,
       filter: (q) => q.eq("userId", userId.subject),
     });
 
@@ -62,41 +70,44 @@ export const searchAllRecords = action({
       filter: (q) => q.eq("userId", userId.subject),
     });
 
-    const records: (
-      | { type: "note", data: Doc<"notes"> }
-      | { type: "document", data: Doc<"documents"> }
-      | { type: "link", data: Doc<"links"> }
-      | { type: "tweet", data: Doc<"tweets"> }
-    )[] = [];
+    const results: SearchResult[] = [];
 
     await Promise.all([
-      ...noteResults.map(async (result) => {
-        const note = await ctx.runQuery(api.notes.getNoteById, { id: result._id });
-        if (note) {
-          records.push({ type: "note", data: note });
-        }
-      }),
-      ...documentResults.map(async (result) => {
-        const document = await ctx.runQuery(api.documents.getDocumentById, { id: result._id });
-        if (document) {
-          records.push({ type: "document", data: document });
-        }
-      }),
-      ...linkResults.map(async (result) => {
-        const link = await ctx.runQuery(api.links.getLinkById, { id: result._id });
-        if (link) {
-          records.push({ type: "link", data: link });
-        }
-      }),
-      ...tweetResults.map(async (result) => {
-        const tweet = await ctx.runQuery(api.tweets.getTweetById, { id: result._id });
-        if (tweet) {
-          records.push({ type: "tweet", data: tweet });
-        }
-      })
+      ...noteResults
+        .filter(result => result._score >= similarityThreshold)
+        .map(async (result) => {
+          const note = await ctx.runQuery(api.notes.getNoteById, { id: result._id });
+          if (note) {
+            results.push({ type: "note" as const, data: note, score: result._score });
+          }
+        }),
+      ...documentResults
+        .filter(result => result._score >= similarityThreshold)
+        .map(async (result) => {
+          const doc = await ctx.runQuery(api.documents.getDocumentById, { id: result._id });
+          if (doc) {
+            results.push({ type: "document" as const, data: doc, score: result._score });
+          }
+        }),
+      ...linkResults
+        .filter(result => result._score >= similarityThreshold)
+        .map(async (result) => {
+          const link = await ctx.runQuery(api.links.getLinkById, { id: result._id });
+          if (link) {
+            results.push({ type: "link" as const, data: link, score: result._score });
+          }
+        }),
+      ...tweetResults
+        .filter(result => result._score >= similarityThreshold)
+        .map(async (result) => {
+          const tweet = await ctx.runQuery(api.tweets.getTweetById, { id: result._id });
+          if (tweet) {
+            results.push({ type: "tweet" as const, data: tweet, score: result._score });
+          }
+        })
     ]);
 
-    return records;
+    return results.sort((a, b) => b.score - a.score);
   },
 });
 

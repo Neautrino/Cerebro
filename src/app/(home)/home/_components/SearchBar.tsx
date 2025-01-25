@@ -10,13 +10,14 @@ import { useAction } from 'convex/react'
 import { api } from '../../../../../convex/_generated/api'
 import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
+import { useSearch } from './SearchContext'
 
 const formSchema = z.object({
     search: z.string()
 })
 
 function SearchBar() {
-
+    const { setSearchResults } = useSearch();
     const searchAllRecords = useAction(api.search.searchAllRecords);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -27,10 +28,13 @@ function SearchBar() {
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values.search);
-        form.reset();
+        if (!values.search.trim()) {
+            setSearchResults(null);
+            return;
+        }
         const results = await searchAllRecords({ search: values.search });
-        console.log(results);
+        setSearchResults(results);
+        form.reset();
     }
 
     // useEffect(() => {

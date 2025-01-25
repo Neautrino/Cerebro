@@ -3,10 +3,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Video, Link2, Twitter, FileIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useState } from 'react';
 import { api } from '../../../../../convex/_generated/api';
 import NotesSkeleton from '../../notes/_components/NotesSkeleton';
-import { useAction, useQuery } from 'convex/react';
+import { useQuery } from 'convex/react';
+import { useSearch } from './SearchContext';
 
 const getIcon = (type: string): React.ReactNode => {
     switch (type) {
@@ -20,15 +20,21 @@ const getIcon = (type: string): React.ReactNode => {
 }
 
 function CardsGrid() {
-
-    const results = useQuery(api.search.getRecentRecords, { numRecords: 6 });
+    const { searchResults } = useSearch();
+    
+    // Initial records on mount
+    const allRecords = useQuery(api.search.getRecentRecords, { numRecords: 50 });
+    
+    const displayRecords = searchResults ?? allRecords;
 
     return (
-        <div className="grid gap-6 md:grid-cols-2 mt-6  ">
-            {results === undefined ? (Array.from({ length: 4 }).map((_, index) => (
-                <NotesSkeleton key={index} />
-            ))) :
-                results.length > 0 ? (results.map((item) => (
+        <div className="grid gap-6 md:grid-cols-2 mt-6">
+            {displayRecords === undefined || displayRecords === null ? (
+                Array.from({ length: 4 }).map((_, index) => (
+                    <NotesSkeleton key={index} />
+                ))
+            ) : displayRecords.length > 0 ? (
+                displayRecords.map((item) => (
                     <Card key={item.data._id} className="hover:bg-accent/50 transition-colors cursor-pointer">
                         <CardHeader>
                             <div className="flex items-center space-x-4">
@@ -36,7 +42,7 @@ function CardsGrid() {
                                     {getIcon(item.type)}
                                 </div>
                                 <div>
-                                    <CardTitle className="text-xl">{item.data.title}</CardTitle>
+                                    <CardTitle className="text-xl line-clamp-1">{item.data.title}</CardTitle>
                                     <p className="text-sm text-muted-foreground">
                                         Added: {new Date(item.data.updatedTime).toLocaleDateString()}
                                     </p>
@@ -55,9 +61,10 @@ function CardsGrid() {
                             </div>
                         </CardContent>
                     </Card>
-                ))) : (
-                    <NotesSkeleton />
-                )}
+                ))
+            ) : (
+                <NotesSkeleton />
+            )}
         </div>
     )
 }
