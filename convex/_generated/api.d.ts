@@ -19,6 +19,7 @@ import type * as links from "../links.js";
 import type * as notes from "../notes.js";
 import type * as search from "../search.js";
 import type * as tags from "../tags.js";
+import type * as tasks from "../tasks.js";
 import type * as tweets from "../tweets.js";
 
 /**
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   notes: typeof notes;
   search: typeof search;
   tags: typeof tags;
+  tasks: typeof tasks;
   tweets: typeof tweets;
 }>;
 export declare const api: FilterApi<

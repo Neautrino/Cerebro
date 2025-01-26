@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Plus, CheckSquare } from 'lucide-react';
-import { TaskList } from '@/components/tasks/TaskList';
-import { TaskFilter } from '@/components/tasks/TaskFilter';
+import { TaskList } from './_components/TaskList';
+import { TaskFilter } from './_components/TaskFilter';
+import AddTaskBtn from './_components/AddTaskBtn';
 
 export default function TasksPage() {
   const [filter, setFilter] = useState('all');
@@ -17,10 +15,7 @@ export default function TasksPage() {
           <h2 className="text-3xl font-bold tracking-tight">Tasks</h2>
           <p className="text-muted-foreground">Manage your tasks and projects</p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          New Task
-        </Button>
+        <AddTaskBtn />
       </div>
       
       <div className="flex gap-6">

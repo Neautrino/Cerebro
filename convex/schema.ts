@@ -12,6 +12,7 @@ export default defineSchema({
     userId: v.string(),
     title: v.string(),
     completed: v.boolean(),
+    dueDate: v.number(),
     priority: v.union(
       v.literal("low"),
       v.literal("medium"),

@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Separator } from '../ui/separator';
 
-
 const sidebarItems = [
     { id: 0, icon: HomeIcon, label: 'Home', href: '/home' },
     { id: 1, icon: FileText, label: 'Notes', href: '/notes' },
@@ -21,28 +20,20 @@ const sidebarItems = [
 
 export default function Sidebar() {
     const pathname = usePathname();
-    const [isCollapsed, setIsCollapsed] = useState(true);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     return (
         <div className={`${isCollapsed ? "w-20" : "w-64"} border-r-2 transition-all duration-300 h-full flex flex-col`}>
             <div className="flex-1 overflow-hidden">
                 <div className="h-full flex flex-col relative py-4">
                     <div className="px-4 py-2 flex items-center gap-4">
-                        {isCollapsed ? (
-                            <Button
-                                variant="outline"
-                                onClick={() => setIsCollapsed(false)}
-                            >
-                                <ArrowRightToLineIcon className="h-4 w-4" />
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="outline"
-                                onClick={() => setIsCollapsed(true)}
-                            >
-                                <ArrowLeftToLineIcon className="h-4 w-4" />
-                            </Button>
-                        )}
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsCollapsed((prev) => !prev)}
+                        >
+                            {isCollapsed ? <ArrowRightToLineIcon className="h-4 w-4" /> : <ArrowLeftToLineIcon className="h-4 w-4" />}
+                        </Button>
+
                         {!isCollapsed && (
                             <div>
                                 <h2 className="text-lg font-semibold">Welcome</h2>
