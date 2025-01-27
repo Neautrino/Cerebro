@@ -77,12 +77,9 @@ export function TaskList({ filter }: { filter: string }) {
             </CardContent>
           </Card>
         ))) : (
-          <Illustration
-            link="/tasks_not_found.svg"
-            title="No tasks found"
-            description="You haven't saved any tasks yet. Click the button to add your first task."
-            type="tasks"
-          />
+          <div className="flex justify-center items-center h-full mt-40">
+            <p className="text-muted-foreground">No tasks found</p>
+          </div>
         )}
     </div>
   );

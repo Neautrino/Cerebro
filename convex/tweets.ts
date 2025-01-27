@@ -1,7 +1,8 @@
 import { ConvexError, v } from "convex/values";
-import { internalAction, internalMutation, mutation, query } from "./_generated/server";
+import { action, internalAction, internalMutation, mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { embed } from "./search";
+import axios from "axios";
 
 export const getTweets = query({
     handler: async (ctx) => {
@@ -66,7 +67,7 @@ export const createTweetEmbedding = internalAction({
     }
 })
 
-export const createTweet = mutation({
+export const createTweet = internalMutation({
     args: {
         title: v.string(),
         content: v.string(),
@@ -100,6 +101,38 @@ export const createTweet = mutation({
         return tweetId;
     },
 });
+
+export const createTweetFromUrl = action({
+    args: {
+        title: v.string(),
+        tweetUrl: v.string(),
+        tags: v.optional(v.array(v.string())),
+    },
+    handler: async (ctx, args) => {
+
+          try {
+            const parsedUrl = new URL(args.tweetUrl);
+            const pathParts = parsedUrl.pathname.split('/');
+            const owner = pathParts[1];
+            const id = pathParts[3];
+        
+            const apiUrl = `https://cdn.syndication.twimg.com/tweet-result?features=tfw_timeline_list%3A%3Btfw_follower_count_sunset%3Atrue%3Btfw_tweet_edit_backend%3Aon%3Btfw_refsrc_session%3Aon%3Btfw_fosnr_soft_interventions_enabled%3Aon%3Btfw_mixed_media_15897%3Atreatment%3Btfw_experiments_cookie_expiration%3A1209600%3Btfw_show_birdwatch_pivots_enabled%3Aon%3Btfw_duplicate_scribes_to_settings%3Aon%3Btfw_use_profile_image_shape_enabled%3Aon%3Btfw_video_hls_dynamic_manifests_15082%3Atrue_bitrate%3Btfw_legacy_timeline_sunset%3Atrue%3Btfw_tweet_edit_frontend%3Aon&id=${id}&lang=en&token=4kbabg4ncmx&mhxten=3iqg8qw9e9yt&xk7qtq=1a98h8cin3oy&og12p0=15xg48m1zrage&mhcgqi=ohuubp8wehhh&vmy5iw=97nyxp78byaj&atza2u=rfjqjg8vbyhk&nz0n3x=1a58whnoj6tkk&owner=${owner}`;
+        
+            const response = await axios.get(apiUrl);
+
+            await ctx.runMutation(internal.tweets.createTweet, {
+                title: args.title,
+                content: response.data.text,
+                url: args.tweetUrl,
+                tags: args.tags,
+                author: owner
+            })
+        
+          } catch (error: any) {
+            throw new ConvexError('Error fetching tweet');
+          }        
+    }
+})
 
 export const deleteTweet = mutation({
     args: { id: v.id("tweets") },

@@ -19,20 +19,20 @@ export default function KnowledgeBasePage() {
           <SearchBar />
         </div>
 
-        <Tabs defaultValue="browse">
+        {/* <Tabs defaultValue="browse">
           <TabsList>
             <TabsTrigger value="browse">Browse</TabsTrigger>
             <TabsTrigger value="ai">Ask AI</TabsTrigger>
-          </TabsList>
+          </TabsList> */}
 
-          <TabsContent value="browse" className="space-y-6">
+          {/* <TabsContent value="browse" className="space-y-6"> */}
             <CardsGrid />
-          </TabsContent>
+          {/* </TabsContent> */}
 
-          <TabsContent value="ai" className="space-y-6">
+          {/* <TabsContent value="ai" className="space-y-6">
             <ChatPanel />
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
       </div>
     </SearchProvider>
   );

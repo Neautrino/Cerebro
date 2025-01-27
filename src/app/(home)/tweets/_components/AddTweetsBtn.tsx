@@ -17,7 +17,7 @@ import {
 import { TagInput } from '@/components/shared/TagsInput';
 import { Plus } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { useMutation } from 'convex/react';
+import { useAction, useMutation } from 'convex/react';
 import UploadingBtn from '@/components/shared/UploadingBtn';
 import { api } from '../../../../../convex/_generated/api';
 
@@ -26,9 +26,7 @@ const formSchema = z.object({
   title: z.string({
     required_error: 'Title is required'
   }),
-  content: z.string(),
-  author: z.string().optional(),
-  url: z.string(),
+  tweetUrl: z.string(),
   tags: z.array(z.string()).optional()
 })
 
@@ -37,25 +35,21 @@ export default function AddNotesBtn() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      content: '',
-      author: '',
-      url: '',
+      tweetUrl: '',
       tags: []
     },
   })
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const createTweet = useMutation(api.tweets.createTweet);
+  const createTweetFromUrl = useAction(api.tweets.createTweetFromUrl);
   const createUniqueTags = useMutation(api.tags.createUniqueTags);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const uniqueTags = Array.from(new Set(values.tags || []));
     
-    await createTweet({ 
-      title: values.title, 
-      content: values.content,
-      author: values.author || '',
-      url: values.url,
+    await createTweetFromUrl({
+      title: values.title,
+      tweetUrl: values.tweetUrl,
       tags: uniqueTags,
     });
     await createUniqueTags({ names: uniqueTags });
@@ -95,41 +89,10 @@ export default function AddNotesBtn() {
             />
             <FormField
               control={form.control}
-              name="author"
+              name="tweetUrl"
               render={({ field }) => (
                 <FormItem className="space-y-2">
-                  <FormLabel htmlFor="author">Author</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter tweet author here..."
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <FormItem className="space-y-2">
-                  <FormLabel htmlFor="content">Content</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter tweet content here..."
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="url"
-              render={({ field }) => (
-                <FormItem className="space-y-2">
-                  <FormLabel htmlFor="url">URL</FormLabel>
+                  <FormLabel htmlFor="url">Tweet URL</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter tweet URL here..."
