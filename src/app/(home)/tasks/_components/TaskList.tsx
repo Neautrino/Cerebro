@@ -8,7 +8,6 @@ import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../../../convex/_generated/api';
 import { Button } from '@/components/ui/button';
 import { Id } from '../../../../../convex/_generated/dataModel';
-import Illustration from '@/components/shared/Illustration';
 import TaskSkeleton from './TasksSkeleton';
 
 export function TaskList({ filter }: { filter: string }) {

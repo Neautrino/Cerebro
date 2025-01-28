@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftToLineIcon, ArrowRightToLineIcon, CheckSquare, FileIcon, FileText, FolderKanban, HomeIcon, Link2, Settings, Twitter, Video } from 'lucide-react';
+import { ArrowLeftToLineIcon, ArrowRightToLineIcon, CheckSquare, FileIcon, FileText, HomeIcon, Link2, Settings, Twitter, Video } from 'lucide-react';
 import { usePathname } from 'next/navigation'
 import React, { useState } from 'react'
 import { Button } from '../ui/button';
@@ -37,7 +37,7 @@ export default function Sidebar() {
                         {!isCollapsed && (
                             <div>
                                 <h2 className="text-lg font-semibold">Welcome</h2>
-                                <p className='text-[10px] text-gray-400'>Don't Overload your brain.</p>
+                                <p className='text-[10px] text-gray-400'>Don&apos;t Overload your brain.</p>
                             </div>
                         )}
                     </div>

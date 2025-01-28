@@ -7,6 +7,7 @@ import { api } from '../../../../../convex/_generated/api';
 import NotesSkeleton from '../../notes/_components/NotesSkeleton';
 import { useQuery } from 'convex/react';
 import { useSearch } from './SearchContext';
+import Illustration from '@/components/shared/Illustration';
 
 const getIcon = (type: string): React.ReactNode => {
     switch (type) {
@@ -62,10 +63,16 @@ function CardsGrid() {
                     </Card>
                 ))
             ) : (
-                <div className="flex flex-col col-span-2 items-center justify-center h-full w-full">
-                    <h2 className="text-2xl font-bold">No results found</h2>
-                    <p className="text-muted-foreground">Try searching for something else</p>
-                </div>
+                // <div className="flex flex-col col-span-2 items-center justify-center h-full w-full">
+                //     <h2 className="text-2xl font-bold">No results found</h2>
+                //     <p className="text-muted-foreground">Try searching for something else</p>
+                // </div>
+                <Illustration
+                    title="No results found"
+                    description="Try searching for something else"
+                    link="/posts_not_found.svg"
+                    type='post'
+                />
             )}
         </div>
     )

@@ -1,7 +1,6 @@
 import { Brain } from "lucide-react"
 import { ThemeToggle } from "../theme-toggle"
 import UserBtn from "./UserBtn"
-import { OrganizationSwitcher } from "@clerk/nextjs"
 
 function Navbar() {
   return (

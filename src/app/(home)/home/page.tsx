@@ -1,8 +1,6 @@
 'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SearchBar from './_components/SearchBar';
-import ChatPanel from './_components/ChatPanel';
 import CardsGrid from './_components/CardsGrid';
 import { SearchProvider } from './_components/SearchContext';
 

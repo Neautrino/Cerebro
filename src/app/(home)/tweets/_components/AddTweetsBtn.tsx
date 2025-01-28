@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form"
 import { TagInput } from '@/components/shared/TagsInput';
 import { Plus } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
 import { useAction, useMutation } from 'convex/react';
 import UploadingBtn from '@/components/shared/UploadingBtn';
 import { api } from '../../../../../convex/_generated/api';

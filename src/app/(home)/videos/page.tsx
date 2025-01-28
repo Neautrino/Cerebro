@@ -2,26 +2,26 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Search, Plus, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import AddVideoBtn from './_components/AddVideoBtn';
+import Image from 'next/image';
 
 const videos = [
   {
     id: 1,
     title: 'Introduction to React Hooks',
     url: 'https://youtube.com/watch?v=example1',
-    thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&q=80',
+    thumbnail: '/netflix.png',
     source: 'YouTube',
-    addedDate: '2024-03-25',
+    addedDate: '2025-01-28',
   },
   {
     id: 2,
     title: 'Advanced TypeScript Patterns',
     url: 'https://youtube.com/watch?v=example2',
-    thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&q=80',
+    thumbnail: '/image.png',
     source: 'YouTube',
-    addedDate: '2024-03-24',
+    addedDate: '2025-01-28',
   },
 ];
 
@@ -40,10 +40,12 @@ export default function VideosPage() {
         {videos.map((video) => (
           <Card key={video.id} className="overflow-hidden">
             <div className="aspect-video relative">
-              <img
+              <Image
                 src={video.thumbnail}
                 alt={video.title}
                 className="object-cover w-full h-full"
+                width={300}
+                height={300}
               />
             </div>
             <CardHeader>

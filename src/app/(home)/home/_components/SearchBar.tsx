@@ -2,13 +2,12 @@
 
 import { Loader2, Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAction } from 'convex/react'
 import { api } from '../../../../../convex/_generated/api'
-import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { useSearch } from './SearchContext'
 

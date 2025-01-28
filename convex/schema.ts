@@ -84,13 +84,4 @@ export default defineSchema({
     name: v.string(),
   }),
 
-  chats: defineTable({
-    userId: v.string(),
-    messages: v.array(v.object({
-      role: v.union(v.literal("user"), v.literal("assistant")),
-      content: v.string(),
-      timestamp: v.number(),
-    })),
-    title: v.optional(v.string()),
-  }).index("by_user_id", ["userId"]),
 });

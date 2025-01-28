@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Save, Link as LinkIcon, Calendar, Tag, CircleChevronLeft, Trash2Icon } from 'lucide-react';
+import { Save, Link as LinkIcon, Calendar, Tag, CircleChevronLeft } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';

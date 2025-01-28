@@ -52,7 +52,7 @@ function LinksCard({ link }: { link: LinkProps }) {
                 <p className="text-muted-foreground mb-4">{link.content}</p>
                 <div className="flex items-center justify-between">
                     <div className="flex gap-2">
-                        {link.tags?.map((tag: any) => (
+                        {link.tags?.map((tag: string) => (
                             <Badge key={tag} variant="secondary">{tag}</Badge>
                         ))}
                     </div>
@@ -65,4 +65,4 @@ function LinksCard({ link }: { link: LinkProps }) {
     )
 }
 
-export default LinksCard
+export default LinksCard;
