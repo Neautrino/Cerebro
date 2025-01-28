@@ -61,12 +61,7 @@ export default function Sidebar() {
                         ))}
                     </div>
                     <div className="px-3 w-full pr-6">
-                        <Link href="/dashboard">
-                            <Button variant="ghost" className="w-full justify-start">
-                                <FolderKanban className="mr-2 h-4 w-4" />
-                                {!isCollapsed && "Dashboard"}
-                            </Button>
-                        </Link>
+
                         <Link href="/settings">
                             <Button variant="ghost" className="w-full justify-start">
                                 <Settings className="mr-2 h-4 w-4" />

@@ -1,6 +1,6 @@
 'use client'
 
-import { Search } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
@@ -46,7 +46,7 @@ function SearchBar() {
     // }, []);
 
     return (
-        <div className="relative flex-1 max-w-2xl mr-4">
+        <div className="relative flex-1 max-w-2xl mr-4 mt-2">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FormField
@@ -66,7 +66,11 @@ function SearchBar() {
                         )}
                     />
                     <Button type="submit" className="absolute right-3 top-1/2 h-10 w-10 -translate-y-1/2">
-                        <Search className="h-6 w-6" />
+                        {form.formState.isSubmitting ? (
+                            <Loader2 className="animate-spin h-5 w-5" />
+                        ) : (
+                            <Search className="h-6 w-6" />
+                        )}
                     </Button>
                 </form>
             </Form>

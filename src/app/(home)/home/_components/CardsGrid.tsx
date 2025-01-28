@@ -22,13 +22,12 @@ const getIcon = (type: string): React.ReactNode => {
 function CardsGrid() {
     const { searchResults } = useSearch();
     
-    // Initial records on mount
     const allRecords = useQuery(api.search.getRecentRecords, { numRecords: 50 });
     
     const displayRecords = searchResults ?? allRecords;
 
     return (
-        <div className="grid gap-6 md:grid-cols-2 mt-6">
+        <div className="grid gap-6 md:grid-cols-2 mt-6 h-full">
             {displayRecords === undefined || displayRecords === null ? (
                 Array.from({ length: 4 }).map((_, index) => (
                     <NotesSkeleton key={index} />
@@ -63,7 +62,10 @@ function CardsGrid() {
                     </Card>
                 ))
             ) : (
-                <NotesSkeleton />
+                <div className="flex flex-col col-span-2 items-center justify-center h-full w-full">
+                    <h2 className="text-2xl font-bold">No results found</h2>
+                    <p className="text-muted-foreground">Try searching for something else</p>
+                </div>
             )}
         </div>
     )

@@ -137,31 +137,34 @@ export const getRecentRecords = query({
 });
 
 export const getRecords = internalQuery({
-  args: { userId: v.string(), numRecords: v.number() },
+  args: { 
+    userId: v.string(),
+    numRecords: v.number(),
+  },
   handler: async (ctx, args) => {
     const notes = await ctx.db
       .query("notes")
       .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
       .order("desc")
-      .take(args.numRecords);
+      .collect();
 
     const documents = await ctx.db
       .query("documents")
       .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
       .order("desc")
-      .take(args.numRecords);
+      .collect();
 
     const links = await ctx.db
       .query("links")
       .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
       .order("desc")
-      .take(args.numRecords);
+      .collect();
 
     const tweets = await ctx.db
       .query("tweets")
       .withIndex("by_user_id", (q) => q.eq("userId", args.userId))
       .order("desc")
-      .take(args.numRecords);
+      .collect();
 
     type Record = 
       | { type: "note"; data: Doc<"notes"> }
