@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cerebro
 
-## Getting Started
+Cerebro is a modern, AI-powered second brain that helps you store, manage, and retrieve your knowledge in real time. Designed for efficiency and scalability, Cerebro leverages Convex DB for real-time data synchronization and vector search powered by generative AI embeddings for smart data retrieval.
 
-First, run the development server:
+## 🚀 Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+[Live Demo](https://cerebro-theta.vercel.app/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 📄 **Second Brain Storage** – Save and manage notes, tasks, links, tweets, and documents effortlessly.
+- ⚡ **Realtime Data Sync** – Powered by **Convex DB** for instant updates across all devices.
+- 🧠 **AI-Powered Search** – Uses **vector embeddings** to retrieve relevant data intelligently.
+- 🎨 **Modern UI/UX** – Built with **Next.js** and **Tailwind CSS** for a sleek and responsive design.
+- 🔐 **Secure Authentication** – Integrated with **Clerk** for seamless and secure user management.
+- 🌙 **Dark Mode** – Enhanced UI for a comfortable viewing experience at night.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠 Tech Stack
 
-## Learn More
+- **Framework:** Next.js – For a high-performance user interface and server-side rendering.
+- **Authentication:** Clerk – Secure authentication and user management.
+- **Realtime Database:** Convex DB – Ensures live data synchronization.
+- **AI Search:** Vector Embeddings – Enables intelligent data retrieval.
+- **UI & Styling:** Tailwind CSS – For a modern and responsive design.
 
-To learn more about Next.js, take a look at the following resources:
+## 🏗 Getting Started
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Follow these steps to set up and run **Cerebro** locally:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Clone the Repository
 
-## Deploy on Vercel
+    git clone https://github.com/Neautrino/Cerebro.git
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Navigate to the Project Directory
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    cd cerebro
+
+### Install Dependencies
+
+    npm install
+
+*or if you face dependency issues:*
+
+    npm install --legacy-peer-deps
+
+### Set Up Environment Variables
+
+Rename `.env.example` to `.env.local` and fill in the required environment variables as per the instructions in the `.env.example` file.
+
+### Run the Development Server
+
+    npm run dev
+
+*and in a separate terminal, run:*
+
+    npx convex dev
+
+Open [http://localhost:3000](http://localhost:3000) to view the application in the browser.
+
+## 🔮 Future Updates
+
+- 🏢 **Collaboration in Organizations** – Invite team members to collaborate within shared spaces.
+- 📤 **Sharing & Permissions** – Share notes, documents, and tasks with granular permission settings.
+- 📊 **Dashboard Section** – Get insights and analytics about your stored data.
+- 📅 **Calendar Integration** – Sync tasks and events with your calendar.
+
+
+## ⚠️ Some Features in Development
+
+Some pages are in development and currently showed as demo pages. These pages are:
+- 🛠 **Settings Page** – Currently under development to allow better customization.
+- 🎥 **Video Page** – In development phase for managing video-related conten
+
+## 🤝 Contribution
+
+We welcome contributions to **Cerebro**! To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes and commit them (`git commit -m 'Add new feature'`).
+4. Push to your branch (`git push origin feature-branch`).
+5. Open a pull request.
+
+* * *
+
+If you find **Cerebro** useful, consider giving it a ⭐ on [GitHub](https://github.com/YourUsername/cerebro)!
+
+Happy coding! 🚀
